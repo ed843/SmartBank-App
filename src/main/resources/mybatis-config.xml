@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="_database.properties" />
+    <environments default="developement">
+        <environment id="developement">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${db.driver}" />
+                <property name="url" value="${db.url}" />
+                <property name="username" value="${db.user}" />
+                <property name="password" value="${db.pass}" />
+            </dataSource>
+        </environment>
+        <environment id="oracle">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${oracle.jdbc.driver}" />
+                <property name="url" value="${oracle.jdbc.url}" />
+            </dataSource>
+        </environment>
+        <environment id="postgres">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="${postgres.jdbc.driver}" />
+                <property name="url" value="${postgres.jdbc.url}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mappers/AccountMapper.xml" />
+        <mapper resource="mappers/AccountTypeMapper.xml" />
+        <mapper resource="mappers/BranchMapper.xml" />
+        <mapper resource="mappers/CustomerMapper.xml" />
+    </mappers>
+</configuration>

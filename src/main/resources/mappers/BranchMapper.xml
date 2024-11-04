@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="database.db_fifth_topic.bank.mybatis.mappers.BranchMapper">
+
+    <!-- Create/Insert a new branch into the table -->
+    <insert id="create" parameterType="database.db_fifth_topic.bank.mybatis.model.Branch"
+            useGeneratedKeys="true" keyProperty="branch_id">
+        INSERT INTO Branch (branch_name, address, phone)
+        VALUES (
+        #{branch_name},
+        #{address},
+        #{phone}
+        )
+    </insert>
+
+    <!-- Read/Select a branch by their ID -->
+    <select id="findById" parameterType="Integer" resultMap="branchGet">
+        SELECT branch_id, branch_name, address, phone
+        FROM Branch WHERE branch_id = #{branch_id}
+    </select>
+
+    <!-- Select COUNT(*) FROM Branch -->
+    <select id="selectCount">
+        SELECT COUNT(*) FROM Branch;
+    </select>
+
+    <!--Update a branch's phone by their ID -->
+    <update id="updatePhone">
+        UPDATE Branch SET phone = #{a} WHERE branch_id = #{b};
+    </update>
+
+    <update id="setSafeUpdates" parameterType="Integer">
+        SET SQL_SAFE_UPDATES = #{n};
+    </update>
+
+    <update id="resetAutoIncrement">
+        ALTER TABLE Branch AUTO_INCREMENT = 1;
+    </update>
+
+    <!--Delete a branch by their ID -->
+    <delete id = "deleteBranch">
+        DELETE from Branch WHERE branch_id = #{branch_id};
+    </delete>
+
+    <!--Delete all branches -->
+    <delete id = "deleteAllBranches">
+        DELETE from Branch;
+    </delete>
+
+    <!-- Map result to the model -->
+    <resultMap type="database.db_fifth_topic.bank.mybatis.model.Branch" id="branchGet" autoMapping="false">
+        <id column="branch_id" property="branch_id"/>
+        <result column="branch_name" property="branch_name"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+</mapper>

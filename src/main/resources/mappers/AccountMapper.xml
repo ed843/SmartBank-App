@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="database.db_fifth_topic.bank.mybatis.mappers.AccountMapper">
+
+    <!-- Create/Insert a new account into the users table -->
+    <insert id="create" parameterType="database.db_fifth_topic.bank.mybatis.model.Account"
+            useGeneratedKeys="true" keyProperty="account_id">
+        INSERT INTO Account (user_id, account_opened, type_id, balance, branch_id)
+        VALUES (
+        #{user_id},
+        #{account_opened},
+        #{type_id},
+        #{balance},
+        #{branch_id}
+        )
+    </insert>
+
+    <!-- Read/Select an account by their ID -->
+    <select id="findById" parameterType="Integer" resultMap="accountGet">
+        SELECT account_id, user_id, account_opened, type_id, balance, branch_id
+        FROM Account WHERE account_id = #{account_id}
+    </select>
+
+    <!-- Select COUNT(*) FROM Account -->
+    <select id="selectCount">
+        SELECT COUNT(*) FROM Account;
+    </select>
+
+    <!--Update an account's balance by their ID -->
+    <update id="updateBalance">
+        UPDATE Account SET balance = #{a} WHERE account_id = #{b};
+    </update>
+
+    <update id="setSafeUpdates" parameterType="Integer">
+        SET SQL_SAFE_UPDATES = #{n};
+    </update>
+
+    <update id="resetAutoIncrement">
+        ALTER TABLE Account AUTO_INCREMENT = 1;
+    </update>
+
+    <!--Delete an account by their ID -->
+    <delete id = "deleteAccount">
+        DELETE from Account WHERE account_id = #{account_id};
+    </delete>
+
+    <!--Delete all accounts -->
+    <delete id = "deleteAllAccounts">
+        DELETE from Account;
+    </delete>
+
+    <!-- Map result to the model -->
+    <resultMap type="database.db_fifth_topic.bank.mybatis.model.Account" id="accountGet" autoMapping="false">
+        <id column="account_id" property="account_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="account_opened" property="account_opened"/>
+        <result column="type_id" property="type_id"/>
+        <result column="balance" property="balance"/>
+        <result column="branch_id" property="branch_id"/>
+    </resultMap>
+</mapper>
