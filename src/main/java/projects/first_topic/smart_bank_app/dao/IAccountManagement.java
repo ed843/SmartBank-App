@@ -6,6 +6,7 @@ import java.util.List;
 public interface IAccountManagement extends IGenericManagement<Account, Integer> {
     void create(Account element) throws SQLException;
     Account findById(Integer id) throws SQLException;
+    List<Account> selectAllAccountsByUserId(Integer user_id) throws SQLException;
     double totalUserBalance(Integer user_id) throws SQLException;
     void resetAutoIncrement() throws SQLException;
     void updateAccountBalance(Account account, Double balance) throws SQLException;

@@ -1,5 +1,7 @@
 package projects.first_topic.smart_bank_app.services;
 import java.sql.*;
+import java.util.List;
+
 import projects.first_topic.smart_bank_app.dao.ITransactionManagement;
 import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
@@ -24,6 +26,9 @@ public class TransactionService {
         iTransactionManagement.setSafeUpdates(n);
     }
 
+    public List<Transaction> selectAllTransactionsByAccountId(Integer account_id) throws SQLException {
+        return iTransactionManagement.selectAllTransactionsByAccountId(account_id);
+    }
 
     public void deleteAllTransactions() throws SQLException {
         iTransactionManagement.deleteAllTransactions();

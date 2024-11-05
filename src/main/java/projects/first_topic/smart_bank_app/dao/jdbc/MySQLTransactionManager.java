@@ -5,7 +5,12 @@ import projects.first_topic.smart_bank_app.connection.DBConnection;
 import projects.first_topic.smart_bank_app.dao.*;
 import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.model.*;
+import projects.first_topic.smart_bank_app.services.TransactionService;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import static projects.first_topic.smart_bank_app.constant.ProjectConstant.*;
 import static projects.first_topic.smart_bank_app.util.DAOUtil.preparedStatement;
 
@@ -87,6 +92,24 @@ public class MySQLTransactionManager implements ITransactionManagement {
         account.setAccount_type(resultSet.getString("account_type"));
         account.setBalance(resultSet.getDouble("balance"));
         return account;
+    }
+
+    @Override
+    public List<Transaction> selectAllTransactionsByAccountId(Integer account_id) throws SQLException {
+        List<Transaction> accountTransactions = new ArrayList<>();
+        Object[] values = {account_id};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection,
+                     ProjectConstant.SQL_FIND_TRANSACTIONS_BY_ACCOUNT_ID, false, values);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Transaction transaction = getTransactionFromResultSet(resultSet);
+                accountTransactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return accountTransactions;
     }
 
     @Override
