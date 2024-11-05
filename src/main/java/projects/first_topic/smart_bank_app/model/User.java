@@ -1,5 +1,7 @@
 package projects.first_topic.smart_bank_app.model;
 
+import java.time.LocalDateTime;
+
 public class User {
     private Integer user_id;
     private String user_name;
@@ -15,6 +17,19 @@ public class User {
     private String registration_date;
 
     public User() {
+    }
+
+    public User(String user_name, String user_type, String password, String first_name, String last_name, String phone, String email, Integer credit_score, double annual_income, LocalDateTime registration_date) {
+        this.user_name = user_name;
+        this.user_type = user_type;
+        this.password = password;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.phone = phone;
+        this.email = email;
+        this.credit_score = credit_score;
+        this.annual_income = annual_income;
+        this.registration_date = registration_date.toString();
     }
 
     public Integer getUser_id() {
