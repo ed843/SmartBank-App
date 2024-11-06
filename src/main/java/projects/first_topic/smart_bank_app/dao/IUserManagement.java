@@ -9,6 +9,7 @@ public interface IUserManagement extends IGenericManagement<User, Integer> {
     void updateUserUsername(User user, String username) throws SQLException;
     void updateUserPassword(User user, String password) throws SQLException;
     void updateUserType(User user, String type) throws SQLException;
+    void updateUserPhoneNumber(User user, String phoneNumber) throws SQLException;
     void resetAutoIncrement() throws SQLException;
     void setSafeUpdates(Integer n) throws SQLException;
     void deleteAllUsers() throws SQLException;

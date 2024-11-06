@@ -147,7 +147,7 @@ public class Main {
                         editUserType(userId);
                         break;
                     case "5":
-                        System.out.println("You selected 'Edit phone number'");
+                        editUserPhoneNumber(userId);
                         break;
                     case "6":
                         System.out.println("You selected 'Edit email'");
@@ -169,7 +169,7 @@ public class Main {
             userService.updateUserUsername(user, newUsername);
             System.out.println("Username successfully updated!");
         } catch (SQLException e) {
-            System.out.println("Error updating password: " + e.getMessage());
+            System.out.println("Error updating username: " + e.getMessage());
         }
     }
 
@@ -303,7 +303,22 @@ public class Main {
 
             }
         } catch (SQLException e) {
-            System.out.println("Error updating password: " + e.getMessage());
+            System.out.println("Error updating membership: " + e.getMessage());
+        }
+    }
+
+    public static void editUserPhoneNumber(int userId) {
+        System.out.println("You selected 'Edit phone number'");
+        String newPhoneNumber = getValidInputOrQ("Enter your new phone number (type 'q' to cancel)", "^\\d{10}$",
+                "Phone number must be 10 digits");
+        if (newPhoneNumber.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserPhoneNumber(user, newPhoneNumber);
+            System.out.println("Phone number successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating phone number: " + e.getMessage());
         }
     }
 

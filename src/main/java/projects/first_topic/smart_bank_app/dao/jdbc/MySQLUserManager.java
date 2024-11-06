@@ -102,6 +102,21 @@ public class MySQLUserManager implements IUserManagement {
         }
     }
 
+    @Override
+    public void updateUserPhoneNumber(User user, String phoneNumber) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {phoneNumber, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_PHONE_NUMBER, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
     private User find(Object... values) throws SQLException {
         User user = null;
         try (Connection connection = DBConnection.getConnection();

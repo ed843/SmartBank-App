@@ -37,6 +37,10 @@ public class UserService {
         iUserManagement.updateUserType(user, type);
     }
 
+    public void updateUserPhoneNumber(User user, String phoneNumber) throws SQLException{
+        iUserManagement.updateUserPhoneNumber(user, phoneNumber);
+    }
+
     public void deleteAllUsers() throws SQLException {
         iUserManagement.deleteAllUsers();
     }
