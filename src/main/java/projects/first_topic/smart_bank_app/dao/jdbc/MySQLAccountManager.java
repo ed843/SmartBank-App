@@ -121,6 +121,21 @@ public class MySQLAccountManager implements IAccountManagement {
     }
 
     @Override
+    public void updateAccountType(Account account, String account_type) throws SQLException {
+        if (account.getAccount_id() == null) {
+            throw new IllegalArgumentException("Account does not exist.");
+        }
+        Object[] values = {account_type, account.getAccount_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_ACCOUNT_TYPE, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
     public void updateAccountBalance(Account account, Double balance) throws SQLException {
         if (account.getAccount_id() == null) {
             throw new IllegalArgumentException("Account does not exist.");

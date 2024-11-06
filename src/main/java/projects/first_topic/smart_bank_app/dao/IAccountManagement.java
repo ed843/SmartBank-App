@@ -9,6 +9,7 @@ public interface IAccountManagement extends IGenericManagement<Account, Integer>
     List<Account> selectAllAccountsByUserId(Integer user_id) throws SQLException;
     double totalUserBalance(Integer user_id) throws SQLException;
     void resetAutoIncrement() throws SQLException;
+    void updateAccountType(Account account, String account_type) throws SQLException;
     void updateAccountBalance(Account account, Double balance) throws SQLException;
     void setSafeUpdates(Integer n) throws SQLException;
     void deleteAllAccounts() throws SQLException;

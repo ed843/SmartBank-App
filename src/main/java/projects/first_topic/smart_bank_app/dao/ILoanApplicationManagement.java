@@ -1,5 +1,4 @@
 package projects.first_topic.smart_bank_app.dao;
-
 import projects.first_topic.smart_bank_app.model.LoanApplication;
 import java.sql.SQLException;
 

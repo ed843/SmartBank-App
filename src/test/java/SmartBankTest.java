@@ -56,12 +56,11 @@ public class SmartBankTest {
         }
     };
 
-
     private static final Account ACCOUNT_1 = new Account() {
         {
             setUser_id(1);
             setAccount_type("Checking");
-            setBalance(6000);
+            setBalance(6000.0);
         }
     };
 
@@ -69,7 +68,7 @@ public class SmartBankTest {
         {
             setUser_id(2);
             setAccount_type("Checking");
-            setBalance(3000);
+            setBalance(3000.0);
         }
     };
 
@@ -77,7 +76,7 @@ public class SmartBankTest {
         {
             setUser_id(2);
             setAccount_type("Saving");
-            setBalance(20000);
+            setBalance(20000.0);
         }
     };
 
@@ -85,11 +84,9 @@ public class SmartBankTest {
         {
             setUser_id(3);
             setAccount_type("Saving");
-            setBalance(50000);
+            setBalance(50000.0);
         }
     };
-
-
 
     private static final LoanApplication LOAN_APPLICATION_1 = new LoanApplication() {
         {
@@ -253,7 +250,6 @@ public class SmartBankTest {
         Assert.assertEquals(user.getPassword(), USER_1.getPassword(), "Password must match");
         Assert.assertEquals(user.getEmail(), USER_1.getEmail(), "Email must match");
     }
-
 
     @Test (priority = 2, description = "Create a User2")
     public void createUserTest02() throws SQLException {
@@ -541,7 +537,6 @@ public class SmartBankTest {
         transactionService.createTransaction(TRANSACTION_4);
     }
 
-
     @Test (priority = 16, description = "Create a Transaction5")
     public void createTransactionTest16() throws SQLException {
         //Create a DAOFactory instance for MySQL
@@ -741,7 +736,6 @@ public class SmartBankTest {
                         + "balance: $" + account.getBalance() + "\n"); });
     }
 
-
     @Test(priority = 27, description = "Select and view account with account_id=1")
     public void readAccountTest27() throws SQLException {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
@@ -767,16 +761,7 @@ public class SmartBankTest {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         TransactionService transactionService = new TransactionService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
-        List<Transaction> accountTransactions
-                = transactionService.selectAllTransactionsByAccountId(ACCOUNT_1.getAccount_id());
-        accountTransactions.forEach(
-                (transaction) -> { System.out.println("Account_id: " + transaction.getAccount_id()
-                        + " Transaction_id: " + transaction.getTransaction_id()
-                        + " Transaction_date: " + transaction.getTransaction_date()
-                        + " Transaction_type: " + transaction.getTransaction_type()
-                        + " Transaction_amount: " + transaction.getTransaction_amount()
-                        + " balance_before: $" + transaction.getAccount_balance_before()
-                        + " balance_after: $" + transaction.getAccount_balance_after()); });
+        transactionService.selectAllTransactionsByAccountId(ACCOUNT_1.getAccount_id());
     }
 
     @Test(priority = 30, description = "Select and view transaction history and account balance with account_id=2")
@@ -784,16 +769,7 @@ public class SmartBankTest {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         TransactionService transactionService = new TransactionService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
-        List<Transaction> accountTransactions
-                = transactionService.selectAllTransactionsByAccountId(ACCOUNT_2.getAccount_id());
-        accountTransactions.forEach(
-                (transaction) -> { System.out.println("Account_id: " + transaction.getAccount_id()
-                        + " Transaction_id: " + transaction.getTransaction_id()
-                        + " Transaction_date: " + transaction.getTransaction_date()
-                        + " Transaction_type: " + transaction.getTransaction_type()
-                        + " Transaction_amount: " + transaction.getTransaction_amount()
-                        + " balance_before: $" + transaction.getAccount_balance_before()
-                        + " balance_after: $" + transaction.getAccount_balance_after()); });
+        transactionService.selectAllTransactionsByAccountId(ACCOUNT_2.getAccount_id());
     }
 
     @Test(priority = 31, description = "Select and view transaction history and account balance with account_id=3")
@@ -801,16 +777,7 @@ public class SmartBankTest {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         TransactionService transactionService = new TransactionService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
-        List<Transaction> accountTransactions
-                = transactionService.selectAllTransactionsByAccountId(ACCOUNT_3.getAccount_id());
-        accountTransactions.forEach(
-                (transaction) -> { System.out.println("Account_id: " + transaction.getAccount_id()
-                        + " Transaction_id: " + transaction.getTransaction_id()
-                        + " Transaction_date: " + transaction.getTransaction_date()
-                        + " Transaction_type: " + transaction.getTransaction_type()
-                        + " Transaction_amount: " + transaction.getTransaction_amount()
-                        + " balance_before: $" + transaction.getAccount_balance_before()
-                        + " balance_after: $" + transaction.getAccount_balance_after()); });
+        transactionService.selectAllTransactionsByAccountId(ACCOUNT_3.getAccount_id());
     }
 
     @Test(priority = 32, description = "Select and view transaction history and account balance with account_id=4")
@@ -818,27 +785,226 @@ public class SmartBankTest {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         TransactionService transactionService = new TransactionService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
-        List<Transaction> accountTransactions
-                = transactionService.selectAllTransactionsByAccountId(ACCOUNT_4.getAccount_id());
-        accountTransactions.forEach(
-                (transaction) -> { System.out.println("Account_id: " + transaction.getAccount_id()
-                        + " Transaction_id: " + transaction.getTransaction_id()
-                        + " Transaction_date: " + transaction.getTransaction_date()
-                        + " Transaction_type: " + transaction.getTransaction_type()
-                        + " Transaction_amount: " + transaction.getTransaction_amount()
-                        + " balance_before: $" + transaction.getAccount_balance_before()
-                        + " balance_after: $" + transaction.getAccount_balance_after()); });
+        transactionService.selectAllTransactionsByAccountId(ACCOUNT_4.getAccount_id());
     }
-
-
 
     // Update User information
+    @Test (priority = 33, description = "Update user_name with user_id=1")
+    public void updateUserNameTest33() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newUserName = "New_User_Name";
+        userService.updateUserName(user, newUserName);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's user_name updated: " + updatedUser.getUser_name());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getUser_name(), newUserName, "User name must match");
+    }
+
+    @Test (priority = 34, description = "Update user_type with user_id=1")
+    public void updateUserTypeTest34() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newUserType = "PLATINUM_USER";
+        userService.updateUserType(user, newUserType);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's user_type updated: " + updatedUser.getUser_type());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getUser_type(), newUserType, "User type must match");
+    }
+
+    @Test (priority = 35, description = "Update password with user_id=1")
+    public void updateUserPasswordTest35() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newUserPassword = "1234567890";
+        userService.updateUserPassword(user, newUserPassword);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's password updated: " + updatedUser.getPassword());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getPassword(), newUserPassword, "User password must match");
+    }
+
+    @Test (priority = 36, description = "Update first_name with user_id=1")
+    public void updateUserFirstNameTest36() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newFirstName = "NewFirstName";
+        userService.updateFirstName(user, newFirstName);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's first_name updated: " + updatedUser.getFirst_name());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getFirst_name(), newFirstName, "User firstname must match");
+    }
+
+    @Test (priority = 37, description = "Update last_name with user_id=1")
+    public void updateUserLastNameTest37() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newLastName = "NewLastName";
+        userService.updateLastName(user, newLastName);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's last_name updated: " + updatedUser.getLast_name());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getLast_name(), newLastName, "User lastname must match");
+    }
+
+    @Test (priority = 38, description = "Update phone with user_id=1")
+    public void updateUserPhoneTest38() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newPhone = "9876543210";
+        userService.updatePhone(user, newPhone);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's phone updated: " + updatedUser.getPhone());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getPhone(), newPhone, "User phone must match");
+    }
+
+    @Test (priority = 39, description = "Update email with user_id=1")
+    public void updateUserEmailTest39() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String newEmail = "new_email@gmail.com";
+        userService.updateEmail(user, newEmail);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's email updated: " + updatedUser.getEmail());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), newEmail, "User email must match");
+        Assert.assertEquals(updatedUser.getRegistration_date(), user.getRegistration_date(),
+                "Registration date must match");
+    }
+
+    @Test (priority = 40, description = "Update credit_score with user_id=1")
+    public void updateUserCreditScoreTest40() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        Integer credit_score = 705;
+        userService.updateCreditScore(user, credit_score);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's credit_score updated: " + updatedUser.getCredit_score());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getCredit_score(), credit_score, "User credit_score must match");
+    }
+
+    @Test (priority = 41, description = "Update annual_income with user_id=1")
+    public void updateUserAnnualIncomeTest41() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        Double updatedAnnual_income = 48200.0;
+        userService.updateAnnualIncome(user, updatedAnnual_income);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's annual income updated: " + updatedUser.getAnnual_income());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getAnnual_income(), updatedAnnual_income, "User annual_income must match");
+    }
+
+    @Test (priority = 42, description = "Update loan_amount with user_id=1")
+    public void updateUserLoanAmountTest42() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        Double updatedLoan_amount = 28000.0;
+        userService.updateLoanAmount(user, updatedLoan_amount);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's loan amount updated: " + updatedUser.getLoan_amount());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getLoan_amount(), updatedLoan_amount, "User loan_amount must match");
+    }
+
+    @Test (priority = 43, description = "Update registration_date with user_id=1")
+    public void updateUserRegistrationDateTest43() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_1.getUser_id());
+        String updatedRegistration_date = "2010-02-03";
+        userService.updateRegistrationDate(user, updatedRegistration_date);
+        User updatedUser = userService.getUser(USER_1.getUser_id());
+        System.out.println("User's registration_date updated: " + updatedUser.getRegistration_date());
+        Assert.assertEquals(updatedUser.getUser_id(), user.getUser_id(), "User id must match");
+        Assert.assertEquals(updatedUser.getEmail(), user.getEmail(), "Email must match");
+        Assert.assertEquals(updatedUser.getRegistration_date(), updatedRegistration_date,
+                "User registration_date must match");
+    }
 
     // Update Account information
+    @Test (priority = 44, description = "Update account_type with account_id=1")
+    public void updateAccountTypeTest44() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        AccountService accountService = new AccountService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        Account account = accountService.getAccount(ACCOUNT_1.getAccount_id());
+        String updatedAccount_type = "Saving";
+        accountService.updateAccountType(account, updatedAccount_type);
+        Account updatedAccount = accountService.getAccount(ACCOUNT_1.getAccount_id());
+        System.out.println("Account's account_type updated: " + account.getAccount_type());
+        Assert.assertEquals(updatedAccount.getAccount_id(), account.getAccount_id(), "Account id must match");
+        Assert.assertEquals(updatedAccount.getAccount_type(), updatedAccount_type, "Account type must match");
+        Assert.assertEquals(updatedAccount.getBalance(), account.getBalance(),
+                "Account balance must match");
+    }
+
+    @Test (priority = 45, description = "Update account balance with account_id=1")
+    public void updateAccountBalanceTest45() throws SQLException {
+        //Create a DAOFactory instance for MySQL
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        AccountService accountService = new AccountService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        Account account = accountService.getAccount(ACCOUNT_1.getAccount_id());
+        Double updatedAccount_balance = 5500.0;
+        accountService.updateAccountBalance(account, updatedAccount_balance);
+        Account updatedAccount = accountService.getAccount(ACCOUNT_1.getAccount_id());
+        System.out.println("Account's balance updated: " + account.getBalance());
+        Assert.assertEquals(updatedAccount.getAccount_id(), account.getAccount_id(), "Account id must match");
+        Assert.assertEquals(updatedAccount.getAccount_type(), account.getAccount_type(), "Account type must match");
+        Assert.assertEquals(updatedAccount.getBalance(), updatedAccount_balance,
+                "Account balance must match");
+    }
 
     // Update LoanApplication status
-    @Test (priority = 40, description = "Update LoanApplication1")
-    public void updateLoanApplicationStatusTest16() throws SQLException {
+    @Test (priority = 46, description = "Update LoanApplication1")
+    public void updateLoanApplicationStatusTest46() throws SQLException {
         //Create a DAOFactory instance for MySQL
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
@@ -857,8 +1023,8 @@ public class SmartBankTest {
                 "Loan Application Status must update");
     }
 
-    @Test (priority = 41, description = "Update LoanApplication2")
-    public void updateLoanApplicationStatusTest17() throws SQLException {
+    @Test (priority = 47, description = "Update LoanApplication2")
+    public void updateLoanApplicationStatusTest47() throws SQLException {
         //Create a DAOFactory instance for MySQL
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
@@ -877,8 +1043,8 @@ public class SmartBankTest {
                 "Loan Application Status must update");
     }
 
-    @Test (priority = 42, description = "Update LoanApplication3")
-    public void updateLoanApplicationStatusTest18() throws SQLException {
+    @Test (priority = 48, description = "Update LoanApplication3")
+    public void updateLoanApplicationStatusTest48() throws SQLException {
         //Create a DAOFactory instance for MySQL
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
@@ -897,8 +1063,8 @@ public class SmartBankTest {
                 "Loan Application Status must update");
     }
 
-    @Test (priority = 43, description = "Update LoanApplication4")
-    public void updateLoanApplicationStatusTest19() throws SQLException {
+    @Test (priority = 49, description = "Update LoanApplication4")
+    public void updateLoanApplicationStatusTest49() throws SQLException {
         //Create a DAOFactory instance for MySQL
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
@@ -917,9 +1083,83 @@ public class SmartBankTest {
                 "Loan Application Status must update");
     }
 
+    // Delete of CRUD
+    @Test(priority = 50, description = "Delete a transaction with transaction_id=3")
+    public void deleteTransactionTest50() throws SQLException {
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        TransactionService transactionService = new TransactionService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        Transaction transaction = transactionService.getTransaction(TRANSACTION_3.getTransaction_id());
+        transactionService.deleteTransaction(transaction);
+        Transaction deletedTransaction = transactionService.getTransaction(TRANSACTION_3.getTransaction_id());
+        if (deletedTransaction == null) {
+            System.out.println("Successfully deleted transaction with transaction_id: "
+                    + transaction.getTransaction_id());
+        }
+    }
 
-    @Test(priority = 50, description = "Delete all Transactions")
-    public void deleteAllTransactionsTest30() throws SQLException {
+    @Test(priority = 51, description = "Delete a transaction with transaction_id=10")
+    public void deleteTransactionTest51() throws SQLException {
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        TransactionService transactionService = new TransactionService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        Transaction transaction = transactionService.getTransaction(TRANSACTION_10.getTransaction_id());
+        transactionService.deleteTransaction(transaction);
+        Transaction deletedTransaction = transactionService.getTransaction(TRANSACTION_10.getTransaction_id());
+        if (deletedTransaction == null) {
+            System.out.println("Successfully deleted transaction with transaction_id: "
+                    + transaction.getTransaction_id());
+        }
+    }
+
+    @Test(priority = 52, description = "Delete a loan application with application_id=4")
+    public void deleteLoanApplicationTest52() throws SQLException {
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        LoanApplication loanApplication
+                = loanApplicationService.getLoanApplication(LOAN_APPLICATION_4.getApplication_id());
+        loanApplicationService.deleteLoanApplication(loanApplication);
+        LoanApplication deletedLoanApplication
+                = loanApplicationService.getLoanApplication(LOAN_APPLICATION_4.getApplication_id());
+        if (deletedLoanApplication == null) {
+            System.out.println("Successfully deleted loan application with application_id: "
+                    + loanApplication.getApplication_id());
+        }
+    }
+
+    @Test(priority = 53, description = "Delete an account with account_id=4")
+    public void deleteAccountTest53() throws SQLException {
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        AccountService accountService = new AccountService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        Account account
+                = accountService.getAccount(ACCOUNT_4.getAccount_id());
+        accountService.deleteAccount(account);
+        Account deletedAccount
+                = accountService.getAccount(ACCOUNT_4.getAccount_id());
+        if (deletedAccount == null) {
+            System.out.println("Successfully deleted account with account_id: "
+                    + account.getAccount_id());
+        }
+    }
+
+    @Test(priority = 54, description = "Delete a user with user_id=3")
+    public void deleteUserTest54() throws SQLException {
+        DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+        UserService userService = new UserService(mySQLFactory);
+        System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
+        User user = userService.getUser(USER_3.getUser_id());
+        userService.deleteUser(user);
+        User deletedUser = userService.getUser(USER_3.getUser_id());
+        if (deletedUser == null) {
+            System.out.println("Successfully deleted user with user_id: "
+                    + user.getUser_id());
+        }
+    }
+
+    @Test(priority = 55, description = "Delete all Transactions")
+    public void deleteAllTransactionsTest55() throws SQLException {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         TransactionService transactionService = new TransactionService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
@@ -929,8 +1169,8 @@ public class SmartBankTest {
         transactionService.resetAutoIncrement();
     }
 
-    @Test(priority = 51, description = "Delete all Loan Applications")
-    public void deleteAllLoanApplicationsTest31() throws SQLException {
+    @Test(priority = 56, description = "Delete all Loan Applications")
+    public void deleteAllLoanApplicationsTest56() throws SQLException {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         LoanApplicationService loanApplicationService = new LoanApplicationService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
@@ -940,8 +1180,8 @@ public class SmartBankTest {
         loanApplicationService.resetAutoIncrement();
     }
 
-    @Test(priority = 52, description = "Delete all Accounts")
-    public void deleteAllAccountsTest32() throws SQLException {
+    @Test(priority = 57, description = "Delete all Accounts")
+    public void deleteAllAccountsTest57() throws SQLException {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         AccountService accountService = new AccountService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);

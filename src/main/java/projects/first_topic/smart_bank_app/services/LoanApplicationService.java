@@ -6,7 +6,6 @@ import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.model.*;
 
 
-
 public class LoanApplicationService {
     private final ILoanApplicationManagement iLoanApplicationManagement;
 

@@ -35,7 +35,19 @@ public class ProjectConstant {
 
 
     // UPDATE of CRUD
+    public static final String SQL_UPDATE_USER_NAME = "UPDATE User SET user_name = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_TYPE = "UPDATE User SET user_type = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_USER_PASSWORD = "UPDATE User SET password = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_FIRST_NAME = "UPDATE User SET first_name = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_LAST_NAME = "UPDATE User SET last_name = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_PHONE = "UPDATE User SET phone = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_EMAIL = "UPDATE User SET email = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_CREDIT_SCORE = "UPDATE User SET credit_score = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_ANNUAL_INCOME = "UPDATE User SET annual_income = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_LOAN_AMOUNT = "UPDATE User SET loan_amount = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_REGISTRATION_DATE
+            = "UPDATE User SET registration_date = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_ACCOUNT_TYPE = "UPDATE Account SET account_type = ? WHERE account_id = ?;";
     public static final String SQL_UPDATE_ACCOUNT_BALANCE = "UPDATE Account SET balance = ? WHERE account_id = ?;";
     public static final String SQL_UPDATE_LOAN_APPLICATION_STATUS
             = "UPDATE LoanApplication SET application_status = ? WHERE application_id = ?;";

@@ -44,7 +44,7 @@ CREATE TABLE `Transaction` (
 `transaction_id` int NOT NULL AUTO_INCREMENT,
 `account_id` int NOT NULL,
 `transaction_type` varchar(45) NOT NULL CHECK(`transaction_type` IN ('deposit', 'withdrawal')),
-`transaction_amount` decimal(10,2) NOT NULL DEFAULT 0,
+`transaction_amount` decimal(10,2) NOT NULL DEFAULT 0 CHECK(`transaction_amount` >= 0),
 `transaction_date` date NOT NULL DEFAULT '2024-10-30',
 `account_balance_before` double NOT NULL DEFAULT 0,
 `account_balance_after` double NOT NULL DEFAULT 0,

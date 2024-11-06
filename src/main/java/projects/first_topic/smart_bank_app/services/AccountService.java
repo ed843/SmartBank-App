@@ -7,6 +7,7 @@ import projects.first_topic.smart_bank_app.model.Account;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public class AccountService {
     private final IAccountManagement iAccountManagement;
 
@@ -24,6 +25,10 @@ public class AccountService {
 
     public void setSafeUpdates(Integer n) throws SQLException {
         iAccountManagement.setSafeUpdates(n);
+    }
+
+    public void updateAccountType(Account account, String account_type) throws SQLException {
+        iAccountManagement.updateAccountType(account, account_type);
     }
 
     public void updateAccountBalance(Account account, Double balance) throws SQLException {
