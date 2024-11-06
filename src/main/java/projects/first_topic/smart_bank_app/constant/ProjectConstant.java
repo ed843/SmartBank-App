@@ -26,6 +26,7 @@ public class ProjectConstant {
 
     // SELECT/READ of CRUD
     public static final String SQL_FIND_BY_USER_ID = "SELECT * FROM User WHERE user_id = ?;";
+    public static final String SQL_FIND_BY_LOGIN = "SELECT * FROM User WHERE user_name = ? AND password = ?;";
     public static final String SQL_FIND_BY_ACCOUNT_ID = "SELECT * FROM Account WHERE account_id = ?;";
     public static final String SQL_FIND_ACCOUNT_BY_USER_ID = "SELECT * FROM Account WHERE user_id = ?;";
     public static final String SQL_FIND_BY_LOAN_APPLICATION_ID
@@ -35,6 +36,7 @@ public class ProjectConstant {
 
     // UPDATE of CRUD
     public static final String SQL_UPDATE_USER_PASSWORD = "UPDATE User SET password = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_TYPE = "UPDATE User SET user_type = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_ACCOUNT_BALANCE = "UPDATE Account SET balance = ? WHERE account_id = ?;";
     public static final String SQL_UPDATE_LOAN_APPLICATION_STATUS
             = "UPDATE LoanApplication SET application_status = ? WHERE application_id = ?;";

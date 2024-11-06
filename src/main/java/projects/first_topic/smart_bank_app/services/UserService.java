@@ -29,6 +29,10 @@ public class UserService {
         iUserManagement.updateUserPassword(user, password);
     }
 
+    public void updateUserType(User user, String type) throws SQLException{
+        iUserManagement.updateUserType(user, type);
+    }
+
     public void deleteAllUsers() throws SQLException {
         iUserManagement.deleteAllUsers();
     }
@@ -39,5 +43,9 @@ public class UserService {
 
     public User getUser(Integer id) throws SQLException {
         return iUserManagement.findById(id);
+    }
+
+    public User getUserByLogin(String username, String password) throws SQLException {
+        return iUserManagement.findByLogin(username, password);
     }
 }
