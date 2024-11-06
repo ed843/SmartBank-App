@@ -8,6 +8,7 @@ import projects.first_topic.smart_bank_app.services.UserService;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -135,7 +136,7 @@ public class Main {
 
                 switch (manageUserInput) {
                     case "1":
-                        System.out.println("You selected 'Edit name'");
+                        editName(userId);
                         break;
                     case "2":
                         editUsername(userId);
@@ -155,6 +156,29 @@ public class Main {
 
                 }
             } while (!manageUserInput.equals("q"));
+        }
+    }
+
+    public static void editName(int userId) {
+        System.out.println("You selected 'Edit name'");
+        String newFirstName = getValidInputOrQ("Please enter your first name (type 'q' to cancel)", "[a-zA-Z]{2,30}",
+                "First name must be 2-30 alphabetic characters");
+        if (newFirstName.equals("q")) return;
+        String newLastName = getValidInputOrQ("Please enter your last name (type 'q' to cancel)", "[a-zA-Z]{2,30}",
+                "Last name must be 2-30 alphabetic characters");
+        if (newLastName.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            if (!Objects.equals(user.getFirst_name(), newFirstName)) {
+                userService.updateFirstName(user, newFirstName);
+            }
+            if (!Objects.equals(user.getLast_name(), newLastName)) {
+                userService.updateLastName(user, newLastName);
+            }
+            System.out.println("Name successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating name: " + e.getMessage());
         }
     }
 

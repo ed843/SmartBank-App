@@ -58,6 +58,36 @@ public class MySQLUserManager implements IUserManagement {
     }
 
     @Override
+    public void updateFirstName(User user, String firstName) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {firstName, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_FIRST_NAME, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateLastName(User user, String lastName) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {lastName, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_LAST_NAME, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
     public void updateUserUsername(User user, String username) throws SQLException {
         if (user.getUser_id() == null) {
             throw new IllegalArgumentException("User does not exist.");
