@@ -117,6 +117,21 @@ public class MySQLUserManager implements IUserManagement {
         }
     }
 
+    @Override
+    public void updateUserEmail(User user, String email) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {email, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_EMAIL, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
     private User find(Object... values) throws SQLException {
         User user = null;
         try (Connection connection = DBConnection.getConnection();

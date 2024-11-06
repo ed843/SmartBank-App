@@ -150,7 +150,7 @@ public class Main {
                         editUserPhoneNumber(userId);
                         break;
                     case "6":
-                        System.out.println("You selected 'Edit email'");
+                        editUserEmail(userId);
                         break;
 
                 }
@@ -316,6 +316,21 @@ public class Main {
             UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
             User user = userService.getUser(userId);
             userService.updateUserPhoneNumber(user, newPhoneNumber);
+            System.out.println("Phone number successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating phone number: " + e.getMessage());
+        }
+    }
+
+    public static void editUserEmail(int userId) {
+        System.out.println("You selected 'Edit email'");
+        String newEmail = getValidInputOrQ("Enter your new email (type 'q' to cancel)", "^[A-Za-z0-9+_.-]+@(.+)$",
+                "Invalid email format");
+        if (newEmail.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserEmail(user, newEmail);
             System.out.println("Phone number successfully updated!");
         } catch (SQLException e) {
             System.out.println("Error updating phone number: " + e.getMessage());
