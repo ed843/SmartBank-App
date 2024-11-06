@@ -35,6 +35,7 @@ public class ProjectConstant {
 
 
     // UPDATE of CRUD
+    public static final String SQL_UPDATE_USER_USERNAME = "UPDATE User SET user_name = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_USER_PASSWORD = "UPDATE User SET password = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_USER_TYPE = "UPDATE User SET user_type = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_ACCOUNT_BALANCE = "UPDATE Account SET balance = ? WHERE account_id = ?;";

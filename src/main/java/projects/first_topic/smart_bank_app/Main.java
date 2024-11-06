@@ -138,7 +138,7 @@ public class Main {
                         System.out.println("You selected 'Edit name'");
                         break;
                     case "2":
-                        System.out.println("You selected 'Edit username'");
+                        editUsername(userId);
                         break;
                     case "3":
                         editPassword(userId);
@@ -158,15 +158,30 @@ public class Main {
         }
     }
 
-    public static void editPassword(int userId) {
-        System.out.println("You selected 'Edit password'");
-        String password = getValidInputOrQ("Enter your new password (type 'q' to cancel)", ".{8,}",
-                "Password must be at least 8 characters long");
-        if (password.equals("q")) return;
+    public static void editUsername(int userId) {
+        System.out.println("You selected 'Edit username'");
+        String newUsername = getValidInputOrQ("Enter your new username (type 'q' to cancel)", "^[a-zA-Z0-9_]{3,20}$",
+                "Username must be 3-20 alphanumeric characters or underscores");
+        if (newUsername.equals("q")) return;
         try {
             UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
             User user = userService.getUser(userId);
-            userService.updateUserPassword(user, password);
+            userService.updateUserUsername(user, newUsername);
+            System.out.println("Username successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating password: " + e.getMessage());
+        }
+    }
+
+    public static void editPassword(int userId) {
+        System.out.println("You selected 'Edit password'");
+        String newPassword = getValidInputOrQ("Enter your new password (type 'q' to cancel)", ".{8,}",
+                "Password must be at least 8 characters long");
+        if (newPassword.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserPassword(user, newPassword);
             System.out.println("Password successfully updated!");
         } catch (SQLException e) {
             System.out.println("Error updating password: " + e.getMessage());

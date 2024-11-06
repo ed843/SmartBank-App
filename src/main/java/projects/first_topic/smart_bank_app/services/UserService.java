@@ -25,6 +25,10 @@ public class UserService {
         iUserManagement.setSafeUpdates(n);
     }
 
+    public void updateUserUsername(User user, String username) throws SQLException {
+        iUserManagement.updateUserUsername(user, username);
+    }
+
     public void updateUserPassword(User user, String password) throws SQLException{
         iUserManagement.updateUserPassword(user, password);
     }
