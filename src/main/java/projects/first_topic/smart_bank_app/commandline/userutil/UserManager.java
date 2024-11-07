@@ -3,6 +3,7 @@ package projects.first_topic.smart_bank_app.commandline.userutil;
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.model.Account;
+import projects.first_topic.smart_bank_app.model.Transaction;
 import projects.first_topic.smart_bank_app.model.User;
 import projects.first_topic.smart_bank_app.services.AccountService;
 import projects.first_topic.smart_bank_app.services.UserService;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import static projects.first_topic.smart_bank_app.commandline.Main.*;
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountChoice;
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountService;
+import static projects.first_topic.smart_bank_app.commandline.userutil.TransactionManager.createTransaction;
 import static projects.first_topic.smart_bank_app.util.InputSanitation.*;
 
 public class UserManager {
@@ -100,6 +102,8 @@ public class UserManager {
                 case "6":
                     editUserEmail(userId);
                     break;
+                case "q":
+                    return;
                 default:
                     System.out.println("\nInvalid option. Please try again.");
 
@@ -171,9 +175,12 @@ public class UserManager {
             Account account = null;
             AccountService accountService = null;
             String userInput;
+            Transaction transaction = null;
             double rewards;
             double platinum;
             double vip;
+            String dep = "deposit";
+            String with = "withdrawal";
 
             // TODO: transaction logs for editing user type
 
@@ -231,8 +238,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - rewards);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), rewards, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "REWARD_USER");
                             System.out.println("\nSuccessfully updated to 'Rewards User'");
                             return;
@@ -241,8 +248,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - platinum);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), platinum, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "PLATINUM_USER");
                             System.out.println("\nSuccessfully updated to 'Platinum User'");
                             return;
@@ -251,8 +258,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - vip);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), vip, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "VIP_USER");
                             System.out.println("\nSuccessfully updated to 'VIP User'");
                             return;
@@ -306,6 +313,8 @@ public class UserManager {
 
                     switch (userInput) {
                         case "1":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "NEW_USER");
                             System.out.println("\nSuccessfully downgraded to 'Regular User'");
                             return;
@@ -314,8 +323,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - platinum);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), platinum, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "PLATINUM_USER");
                             System.out.println("\nSuccessfully upgraded to 'Platinum User'");
                             return;
@@ -324,8 +333,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - vip);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), vip, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "VIP_USER");
                             System.out.println("\nSuccessfully upgraded to 'VIP User'");
                             return;
@@ -381,10 +390,14 @@ public class UserManager {
 
                     switch (userInput) {
                         case "1":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "NEW_USER");
                             System.out.println("\nSuccessfully downgraded to 'Regular User'");
                             return;
                         case "2":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "REWARD_USER");
                             System.out.println("\nSuccessfully downgraded to 'Rewards User'");
                             return;
@@ -393,8 +406,8 @@ public class UserManager {
                                 System.out.println("\nDeclined: Insufficient funds");
                                 return;
                             }
-                            account.setBalance(account.getBalance() - vip);
-                            accountService.updateAccountBalance(account, account.getBalance());
+                            transaction = createTransaction(account.getAccount_id(), vip, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "VIP_USER");
                             System.out.println("\nSuccessfully upgraded to 'VIP User'");
                             return;
@@ -416,14 +429,20 @@ public class UserManager {
 
                     switch (userInput) {
                         case "1":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "NEW_USER");
                             System.out.println("\nSuccessfully downgraded to 'Regular User'");
                             return;
                         case "2":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "REWARD_USER");
                             System.out.println("\nSuccessfully downgraded to 'Rewards User'");
                             return;
                         case "3":
+                            transaction = createTransaction(account.getAccount_id(), 0, with);
+                            if (transaction == null) return;
                             userService.updateUserType(user, "PLATINUM_USER");
                             System.out.println("\nSuccessfully downgraded to 'Platinum User'");
                             break;

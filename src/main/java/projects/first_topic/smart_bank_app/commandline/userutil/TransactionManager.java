@@ -17,18 +17,19 @@ import static projects.first_topic.smart_bank_app.commandline.userutil.UserManag
 
 public class TransactionManager {
 
-    public static void createTransaction(int accountId, double amount, String type) {
+    public static Transaction createTransaction(int accountId, double amount, String type) {
         Transaction transaction = new Transaction(accountId, type, amount, LocalDate.now().toString());
         TransactionService transactionService = getTransactionService();
         if (transactionService == null) {
-            return;
+            return null;
         }
         try {
             transactionService.createTransaction(transaction);
-
         } catch (SQLException e) {
             System.out.println("\nError creating transaction: " + e.getMessage());
+            return null;
         }
+        return transaction;
     }
 
     public static void logTransactions() {

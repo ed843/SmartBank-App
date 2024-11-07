@@ -65,6 +65,7 @@ public class AccountManager {
         if(accountService == null) return;
         if (userId < 0) return;
 
+        String manageUserInput;
         List<Account> accounts;
         Account account = null;
 
@@ -73,11 +74,21 @@ public class AccountManager {
             if (accounts.isEmpty()) {
                 System.out.println("\nNo accounts associated with current user. Please create an account.");
             } else {
-                System.out.println("\nUser accounts:");
-                System.out.println("\t\tid\tbalance\ttype");
-                for (int i = 0; i < accounts.size(); i++) {
-                    account = accounts.get(i);
-                    System.out.println((i + 1) + ":\t\t" + account.getAccount_id() + "\t$" + account.getBalance() + "\t" + account.getAccount_type());
+                while (true) {
+                    System.out.println("\nUser accounts:");
+                    System.out.println("\t\tid\tbalance\ttype");
+                    for (int i = 0; i < accounts.size(); i++) {
+                        account = accounts.get(i);
+                        System.out.println((i + 1) + ":\t\t" + account.getAccount_id() + "\t$" + account.getBalance() + "\t" + account.getAccount_type());
+                    }
+                    System.out.print("\nEnter 'Q' to exit: ");
+
+                    manageUserInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (manageUserInput.equals("q")) {
+                        break;
+                    }
+                    System.out.println("\nInvalid option. Please try again.");
                 }
             }
         } catch (SQLException e) {
