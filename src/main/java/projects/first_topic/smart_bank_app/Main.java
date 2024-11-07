@@ -3,6 +3,7 @@ package projects.first_topic.smart_bank_app;
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
+import projects.first_topic.smart_bank_app.loanManager.LoanHandler;
 import projects.first_topic.smart_bank_app.model.User;
 import projects.first_topic.smart_bank_app.services.AccountService;
 import projects.first_topic.smart_bank_app.services.LoanApplicationService;
@@ -15,7 +16,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
-    private static final Scanner scanner = new Scanner(System.in);
+    public static final Scanner scanner = new Scanner(System.in);
     private static UserService userService;
     private static LoanApplicationService loanService;
     private static AccountService accountService;
@@ -68,8 +69,7 @@ public class Main {
                         break;
                     case "6":
                         System.out.println("You selected 'Apply for loan'");
-                        // Add code for Option 3
-                        applyForLoanMenu();
+                        LoanHandler.applyForLoanMenu();
                         break;
                     case "7":
                         System.out.println("You selected 'Transaction log'");
@@ -88,68 +88,7 @@ public class Main {
         }
         scanner.close();
     }
-    private static void applyForLoanMenu() {
-        try {
-            System.out.println("\n=== Loan Application Form ===");
 
-            // Get user ID
-            System.out.print("Enter user ID: ");
-            Integer userId = Integer.parseInt(scanner.nextLine().trim());
-
-            // Validate user exists
-            User user = UserService.getUser(userId);
-            if (user == null) {
-                System.out.println("Error: User not found");
-                return;
-            }
-
-            // Get loan type
-            System.out.println("\nAvailable loan types:");
-            System.out.println("1. Personal Loan");
-            System.out.println("2. Home Loan");
-            System.out.println("3. Auto Loan");
-            System.out.println("4. Business Loan");
-            System.out.print("Select loan type (1-4): ");
-
-            String loanType;
-            switch (scanner.nextLine().trim()) {
-                case "1" -> loanType = "PERSONAL";
-                case "2" -> loanType = "HOME";
-                case "3" -> loanType = "AUTO";
-                case "4" -> loanType = "BUSINESS";
-                default -> {
-                    System.out.println("Invalid loan type selected");
-                    return;
-                }
-            }
-
-            // Get loan amount
-            System.out.print("Enter loan amount: ");
-            double amount = Double.parseDouble(scanner.nextLine().trim());
-            if (amount <= 0) {
-                System.out.println("Error: Loan amount must be positive");
-                return;
-            }
-
-            // Get dates
-            System.out.print("Enter start date (YYYY-MM-DD): ");
-            String startDate = scanner.nextLine().trim();
-            System.out.print("Enter end date (YYYY-MM-DD): ");
-            String endDate = scanner.nextLine().trim();
-
-            // Submit application
-            LoanApplicationService.applyForLoan(userId, loanType, amount, startDate, endDate);
-
-            System.out.println("Loan application processed successfully!");
-
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Please enter valid numbers");
-        } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
     public static void createUser() {
         try {
             System.out.println("You selected 'Create user'");
