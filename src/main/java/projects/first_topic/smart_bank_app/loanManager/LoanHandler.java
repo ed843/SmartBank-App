@@ -7,7 +7,7 @@ import projects.first_topic.smart_bank_app.services.UserService;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import static projects.first_topic.smart_bank_app.Main.scanner;
+import static projects.first_topic.smart_bank_app.commandline.Main.scanner;
 
 public class LoanHandler {
 

@@ -5,6 +5,7 @@ import java.util.Scanner;
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.*;
 import static projects.first_topic.smart_bank_app.commandline.userutil.TransactionManager.logTransactions;
 import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.*;
+import static projects.first_topic.smart_bank_app.loanManager.LoanHandler.*;
 
 public class Main {
     public static final Scanner scanner = new Scanner(System.in);
@@ -47,8 +48,7 @@ public class Main {
                     manageAccount();
                     break;
                 case "6":
-                    System.out.println("You selected 'Apply for loan'");
-                    // Add code for Option 3
+                    applyForLoanMenu();
                     break;
                 case "7":
                     logTransactions();
