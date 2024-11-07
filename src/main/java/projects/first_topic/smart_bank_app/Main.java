@@ -2,10 +2,12 @@ package projects.first_topic.smart_bank_app;
 
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
+import projects.first_topic.smart_bank_app.loanManager.LoanHandler;
 import projects.first_topic.smart_bank_app.model.Account;
 import projects.first_topic.smart_bank_app.model.Transaction;
 import projects.first_topic.smart_bank_app.model.User;
 import projects.first_topic.smart_bank_app.services.AccountService;
+import projects.first_topic.smart_bank_app.services.LoanApplicationService;
 import projects.first_topic.smart_bank_app.services.TransactionService;
 import projects.first_topic.smart_bank_app.services.UserService;
 
@@ -17,62 +19,76 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
-    private static final Scanner scanner = new Scanner(System.in);
+    public static final Scanner scanner = new Scanner(System.in);
+    private static UserService userService;
+    private static LoanApplicationService loanService;
+    private static AccountService accountService;
+    private static TransactionService transactionService;
 
     public static void main(String[] args) {
+        try {
+            // Initialize services
+            DAOFactory daoFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
+            userService = new UserService(daoFactory);
+            loanService = new LoanApplicationService(daoFactory);
+            accountService = new AccountService(daoFactory);
+            transactionService = new TransactionService(daoFactory);
 
-        String userInput;
+            String userInput;
+            do {
+                // Display menu options
+                System.out.println("\nPlease select an option:");
+                System.out.println("1. Create user");
+                System.out.println("2. Manage user");
+                System.out.println("3. Create account");
+                System.out.println("4. View account");
+                System.out.println("5. Manage account");
+                System.out.println("6. Apply for loan");
+                System.out.println("7. Transaction log");
+                System.out.println("Q. Quit");
+                System.out.print("Enter your choice: ");
 
-        do {
-            // Display menu options
-            System.out.println("\nPlease select an option:");
-            System.out.println("1. Create user");
-            System.out.println("2. Manage user");
-            System.out.println("3. Create account");
-            System.out.println("4. View account");
-            System.out.println("5. Manage account");
-            System.out.println("6. Apply for loan");
-            System.out.println("7. Transaction log");
-            System.out.println("Q. Quit");
-            System.out.print("Enter your choice: ");
+                // Get user input
+                userInput = scanner.nextLine().trim().toLowerCase();
 
-            // Get user input
-            userInput = scanner.nextLine().trim().toLowerCase();
-
-            // Process user input
-            switch (userInput) {
-                case "1":
-                    createUser();
-                    break;
-                case "2":
-                    manageUser();
-                    break;
-                case "3":
-                    System.out.println("You selected 'Create account'");
-                    // Add code for Option 3
-                    break;
-                case "4":
-                    System.out.println("You selected 'View account'");
-                    // Add code for Option 3
-                    break;
-                case "5":
-                    System.out.println("You selected 'Manage account'");
-                    // Add code for Option 3
-                    break;
-                case "6":
-                    System.out.println("You selected 'Apply for loan'");
-                    // Add code for Option 3
-                    break;
-                case "7":
-                    logTransactions();
-                    break;
-                case "q":
-                    System.out.println("Exiting the program. Goodbye!");
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        } while (!userInput.equals("q"));
+                // Process user input
+                switch (userInput) {
+                    case "1":
+                        createUser();
+                        break;
+                    case "2":
+                        manageUser();
+                        break;
+                    case "3":
+                        System.out.println("You selected 'Create account'");
+                        // Add code for Option 3
+                        break;
+                    case "4":
+                        System.out.println("You selected 'View account'");
+                        // Add code for Option 3
+                        break;
+                    case "5":
+                        System.out.println("You selected 'Manage account'");
+                        // Add code for Option 3
+                        break;
+                    case "6":
+                        System.out.println("You selected 'Apply for loan'");
+                        LoanHandler.applyForLoanMenu();
+                        break;
+                    case "7":
+                        logTransactions();
+                        break;
+                    case "q":
+                        System.out.println("Exiting the program. Goodbye!");
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+            } while (!userInput.equals("q"));
+        } catch (SQLException e) {
+            System.out.println("Error initializing services: " + e.getMessage());
+            return;
+        }
 
         scanner.close();
     }
