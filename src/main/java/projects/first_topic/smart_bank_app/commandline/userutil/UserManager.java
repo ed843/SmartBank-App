@@ -1,4 +1,4 @@
-package projects.first_topic.smart_bank_app.frontend.userutil;
+package projects.first_topic.smart_bank_app.commandline.userutil;
 
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
@@ -8,10 +8,12 @@ import projects.first_topic.smart_bank_app.services.AccountService;
 import projects.first_topic.smart_bank_app.services.UserService;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static projects.first_topic.smart_bank_app.frontend.Main.*;
+import static projects.first_topic.smart_bank_app.commandline.Main.*;
+import static projects.first_topic.smart_bank_app.util.InputSanitation.*;
 
 public class UserManager {
 
@@ -50,6 +52,8 @@ public class UserManager {
             userService.createUser(user);
 
             System.out.println("\nUser created successfully!");
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("\nDuplicate entry found. Please try again." + e.getMessage());
         } catch (SQLException e) {
             System.out.println("\nError creating user: " + e.getMessage());
         }
@@ -426,6 +430,43 @@ public class UserManager {
             System.out.println("\nEmail successfully updated!");
         } catch (SQLException e) {
             System.out.println("\nError updating email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Authenticates a user and returns their user ID.
+     *
+     * @return The user ID if authentication is successful, -1 if the user chooses to quit, or -2 if authentication fails.
+     */
+    public static int manageUserAuthentication() {
+        UserService userService;
+        try {
+            userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error initializing UserService: " + e.getMessage());
+            return -2;
+        }
+
+        System.out.println("Please login: (enter 'q' at any prompt to go back)");
+
+        while (true) {
+            String username = getValidInputOrQ("Username", "^[a-zA-Z0-9_]{3,20}$", "Username must be 3-20 alphanumeric characters or underscores");
+            if (username.equalsIgnoreCase("q")) return -1;
+
+            String password = getValidInputOrQ("Password", ".{8,}", "Password must be at least 8 characters long");
+            if (password.equalsIgnoreCase("q")) return -1;
+
+            try {
+                User user = userService.getUserByLogin(username, password);
+                if (user != null) {
+                    System.out.println("Login successful!");
+                    return user.getUser_id();
+                } else {
+                    System.out.println("Invalid username or password. Please try again.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error during authentication: " + e.getMessage());
+            }
         }
     }
 

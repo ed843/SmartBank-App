@@ -8,6 +8,7 @@ public interface IAccountManagement extends IGenericManagement<Account, Integer>
     void create(Account element) throws SQLException;
     Account findById(Integer id) throws SQLException;
     Account findByUserId(Integer user_id) throws SQLException;
+    List<Account> findAccountsByUserId(Integer userId) throws SQLException;
     void resetAutoIncrement() throws SQLException;
     void updateAccountType(Account account, String accountType) throws SQLException;
     void updateAccountBalance(Account account, Double balance) throws SQLException;

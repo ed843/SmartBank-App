@@ -1,13 +1,15 @@
-package projects.first_topic.smart_bank_app.frontend.userutil;
+package projects.first_topic.smart_bank_app.commandline.userutil;
 
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.model.Account;
 import projects.first_topic.smart_bank_app.services.AccountService;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.manageUserAuthentication;
 import static projects.first_topic.smart_bank_app.constant.ProjectConstant.MYSQL;
-import static projects.first_topic.smart_bank_app.frontend.Main.*;
+import static projects.first_topic.smart_bank_app.commandline.Main.*;
 
 public class AccountManager {
 
@@ -18,16 +20,11 @@ public class AccountManager {
         Account account;
         try {
             accountService = new AccountService(DAOFactory.getDAOFactory(MYSQL));
-            account = accountService.getAccountByUserId(userId);
-            if (account != null) {
-                System.out.println("\nThis user already has an account.");
-                return;
-            }
         } catch (SQLException e) {
             System.out.println("\nError initializing AccountService: " + e.getMessage());
             return;
         }
-        if (userId != -1 && userId != -2) {
+        if (userId != -1) {
 
             String manageUserInput;
 
@@ -75,25 +72,28 @@ public class AccountManager {
             System.out.println("\nError initializing AccountService: " + e.getMessage());
             return;
         }
-        if (userId != -1 && userId != -2) {
+        if (userId != -1) {
 
             String manageUserInput;
-            Account account;
+            List<Account> accounts;
+            Account account = null;
 
             do {
                 try {
-                    account = accountService.getAccountByUserId(userId);
-                    if (account == null) {
-                        System.out.println("\nNo account associated with current user. Please create an account.");
+                    accounts = accountService.getAccountsByUserId(userId);
+                    if (accounts.isEmpty()) {
+                        System.out.println("\nNo accounts associated with current user. Please create an account.");
                         return;
                     } else {
-                        System.out.println("\nAccount successfully retrieved!\n");
-                        System.out.println("Account ID: " + account.getAccount_id());
-                        System.out.println("Account Type: " + account.getAccount_type());
-                        System.out.println("Account Balance: " + account.getBalance());
+                        System.out.println("\nUser accounts:");
+                        System.out.println("\t\tid\tbalance\ttype");
+                        for (int i = 0; i < accounts.size(); i++) {
+                            account = accounts.get(i);
+                            System.out.println((i + 1) + ":\t\t" + account.getAccount_id() + "\t$" + account.getBalance() + "\t" + account.getAccount_type());
+                        }
                     }
                 } catch (SQLException e) {
-                    System.out.println("Error retrieving account information: " + e.getMessage());
+                    System.out.println("\nError retrieving account information: " + e.getMessage());
                 }
                 System.out.print("\nEnter 'Q' to go back: ");
 
@@ -114,7 +114,7 @@ public class AccountManager {
             System.out.println("\nError initializing AccountService: " + e.getMessage());
             return;
         }
-        if (userId != -1 && userId != -2) {
+        if (userId != -1) {
 
             String manageUserInput;
             Account account;

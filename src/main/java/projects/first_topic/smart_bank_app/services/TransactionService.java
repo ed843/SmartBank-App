@@ -1,5 +1,7 @@
 package projects.first_topic.smart_bank_app.services;
 import java.sql.*;
+import java.util.List;
+
 import projects.first_topic.smart_bank_app.dao.ITransactionManagement;
 import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
@@ -36,4 +38,9 @@ public class TransactionService {
     public Transaction getTransaction(Integer id) throws SQLException {
         return iTransactionManagement.findById(id);
     }
+
+    public List<Transaction> getTransactionByAccountId(Integer accountId) throws SQLException {
+        return iTransactionManagement.findByAccountId(accountId);
+    }
+
 }

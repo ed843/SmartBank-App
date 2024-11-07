@@ -20,7 +20,7 @@ PRIMARY KEY (`user_id`)
 
 CREATE TABLE `Account` (
 `account_id` int NOT NULL AUTO_INCREMENT,
-`user_id` int NOT NULL UNIQUE,
+`user_id` int NOT NULL,
 `account_type` varchar(45) NOT NULL CHECK(`account_type` IN ('CHECKING_ACCOUNT', 'SAVINGS_ACCOUNT')),
 `balance` decimal(10,2) NOT NULL DEFAULT 0 CHECK (`balance` >= 0),
 PRIMARY KEY(`account_id`),

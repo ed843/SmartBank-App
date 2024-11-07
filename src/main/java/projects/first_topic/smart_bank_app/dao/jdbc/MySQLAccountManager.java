@@ -58,6 +58,24 @@ public class MySQLAccountManager implements IAccountManagement {
         return account;
     }
 
+    @Override
+    public List<Account> findAccountsByUserId(Integer user_id) throws SQLException {
+        Object[] values = {user_id};
+        List<Account> accounts = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_ACCOUNT_BY_USER_ID,
+                     false, values);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Account account = getAccountFromResultSet(resultSet);
+                accounts.add(account);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return accounts;
+    }
+
     private Account find(Object... values) throws SQLException {
         Account account = null;
         try (Connection connection = DBConnection.getConnection();

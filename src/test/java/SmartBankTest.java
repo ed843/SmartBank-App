@@ -286,13 +286,16 @@ public class SmartBankTest {
         DAOFactory mySQLFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
         AccountService accountService = new AccountService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
-        try {
-            accountService.createAccount(ACCOUNT_3);
-            fail("Account creation should have failed due to duplicate user_id.");
-        } catch (SQLException e) {
-            System.out.println("Account creation failed as expected: " + e.getMessage());
-            Assert.assertTrue(e.getMessage().contains("Duplicate entry"));
-        }
+        accountService.createAccount(ACCOUNT_3);
+        Account account = accountService.getAccountById(ACCOUNT_3.getAccount_id());
+        System.out.println("Account successfully created: " + account.getAccount_id());
+        checkAccount03(account);
+    }
+
+    private void checkAccount03(Account account) {
+        Assert.assertEquals(account.getUser_id(), ACCOUNT_3.getUser_id(), "User id must match");
+        Assert.assertEquals(account.getAccount_type(), ACCOUNT_3.getAccount_type(), "Account Type must match");
+        Assert.assertEquals(account.getBalance(), ACCOUNT_3.getBalance(), "Balance must match");
     }
 
     @Test (priority = 7, description = "Create an Account4")
