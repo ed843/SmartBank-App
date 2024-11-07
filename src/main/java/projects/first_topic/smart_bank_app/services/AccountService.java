@@ -22,6 +22,10 @@ public class AccountService {
         iAccountManagement.resetAutoIncrement();
     }
 
+    public double totalUserBalance(Integer user_id) throws SQLException {
+        return iAccountManagement.totalUserBalance(user_id);
+    }
+
     public void setSafeUpdates(Integer n) throws SQLException {
         iAccountManagement.setSafeUpdates(n);
     }

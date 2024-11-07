@@ -1,6 +1,7 @@
 package projects.first_topic.smart_bank_app.services;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.List;
 
 import projects.first_topic.smart_bank_app.dao.IAccountManagement;
 import projects.first_topic.smart_bank_app.dao.ILoanApplicationManagement;

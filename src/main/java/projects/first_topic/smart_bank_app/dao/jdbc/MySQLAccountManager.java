@@ -59,6 +59,24 @@ public class MySQLAccountManager implements IAccountManagement {
     }
 
     @Override
+    public double totalUserBalance(Integer user_id) throws SQLException {
+        double balance = 0.0;
+        Object[] values = {user_id};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_ACCOUNT_BY_USER_ID,
+                     false, values);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Account account = getAccountFromResultSet(resultSet);
+                balance += account.getBalance();
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return balance;
+    }
+
+    @Override
     public List<Account> findAccountsByUserId(Integer user_id) throws SQLException {
         Object[] values = {user_id};
         List<Account> accounts = new ArrayList<>();
@@ -89,24 +107,6 @@ public class MySQLAccountManager implements IAccountManagement {
             throw new SQLException(e);
         }
         return account;
-    }
-
-    @Override
-    public List<Account> findAccountsByUserId(Integer user_id) throws SQLException {
-        Object[] values = {user_id};
-        List<Account> accounts = new ArrayList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_ACCOUNT_BY_USER_ID,
-                     false, values);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Account account = getAccountFromResultSet(resultSet);
-                accounts.add(account);
-            }
-        } catch (SQLException e) {
-            throw new SQLException(e);
-        }
-        return accounts;
     }
 
     /**
