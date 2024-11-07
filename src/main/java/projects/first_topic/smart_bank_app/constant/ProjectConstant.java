@@ -32,6 +32,7 @@ public class ProjectConstant {
     public static final String SQL_FIND_BY_LOAN_APPLICATION_ID
             = "SELECT * FROM LoanApplication WHERE application_id = ?;";
     public static final String SQL_FIND_BY_TRANSACTION_ID = "SELECT * FROM Transaction WHERE transaction_id = ?;";
+    public static final String SQL_FIND_TRANSACTIONS_BY_ACCOUNT_ID = "SELECT * FROM Transaction WHERE account_id = ?;";
 
 
     // UPDATE of CRUD

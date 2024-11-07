@@ -5,6 +5,7 @@ import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.model.Account;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class AccountService {
     private final IAccountManagement iAccountManagement;
@@ -39,5 +40,9 @@ public class AccountService {
 
     public Account getAccount(Integer id) throws SQLException {
         return iAccountManagement.findById(id);
+    }
+
+    public List<Account> getAccountsByUserId(Integer userId) throws SQLException {
+        return iAccountManagement.findAccountsByUserId(userId);
     }
 }
