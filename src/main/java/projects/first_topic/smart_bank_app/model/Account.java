@@ -4,9 +4,14 @@ public class Account {
     private Integer account_id;
     private Integer user_id;
     private String account_type;
-    private double balance;
+    private double balance = 0.00;
 
     public Account() {
+    }
+
+    public Account(Integer user_id, String account_type) {
+        this.user_id = user_id;
+        this.account_type = account_type;
     }
 
     public Integer getAccount_id() {

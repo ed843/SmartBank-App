@@ -6,6 +6,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 public class SmartBankTest {
     private static final User USER_1 = new User() {
@@ -60,7 +63,7 @@ public class SmartBankTest {
     private static final Account ACCOUNT_1 = new Account() {
         {
             setUser_id(1);
-            setAccount_type("Checking");
+            setAccount_type("CHECKING_ACCOUNT");
             setBalance(6000);
         }
     };
@@ -68,7 +71,7 @@ public class SmartBankTest {
     private static final Account ACCOUNT_2 = new Account() {
         {
             setUser_id(2);
-            setAccount_type("Checking");
+            setAccount_type("CHECKING_ACCOUNT");
             setBalance(3000);
         }
     };
@@ -76,7 +79,7 @@ public class SmartBankTest {
     private static final Account ACCOUNT_3 = new Account() {
         {
             setUser_id(2);
-            setAccount_type("Saving");
+            setAccount_type("SAVINGS_ACCOUNT");
             setBalance(20000);
         }
     };
@@ -84,7 +87,7 @@ public class SmartBankTest {
     private static final Account ACCOUNT_4 = new Account() {
         {
             setUser_id(3);
-            setAccount_type("Saving");
+            setAccount_type("SAVINGS_ACCOUNT");
             setBalance(50000);
         }
     };
@@ -248,7 +251,7 @@ public class SmartBankTest {
         accountService.setSafeUpdates(1);
         accountService.resetAutoIncrement();
         accountService.createAccount(ACCOUNT_1);
-        Account account = accountService.getAccount(ACCOUNT_1.getAccount_id());
+        Account account = accountService.getAccountById(ACCOUNT_1.getAccount_id());
         System.out.println("Account successfully created: " + account.getAccount_id());
         checkAccount01(account);
     }
@@ -266,7 +269,7 @@ public class SmartBankTest {
         AccountService accountService = new AccountService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
         accountService.createAccount(ACCOUNT_2);
-        Account account = accountService.getAccount(ACCOUNT_2.getAccount_id());
+        Account account = accountService.getAccountById(ACCOUNT_2.getAccount_id());
         System.out.println("Account successfully created: " + account.getAccount_id());
         checkAccount02(account);
     }
@@ -284,7 +287,7 @@ public class SmartBankTest {
         AccountService accountService = new AccountService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
         accountService.createAccount(ACCOUNT_3);
-        Account account = accountService.getAccount(ACCOUNT_3.getAccount_id());
+        Account account = accountService.getAccountById(ACCOUNT_3.getAccount_id());
         System.out.println("Account successfully created: " + account.getAccount_id());
         checkAccount03(account);
     }
@@ -302,7 +305,7 @@ public class SmartBankTest {
         AccountService accountService = new AccountService(mySQLFactory);
         System.out.println("DAOFactory successfully obtained: " + mySQLFactory);
         accountService.createAccount(ACCOUNT_4);
-        Account account = accountService.getAccount(ACCOUNT_4.getAccount_id());
+        Account account = accountService.getAccountById(ACCOUNT_4.getAccount_id());
         System.out.println("Account successfully created: " + account.getAccount_id());
         checkAccount04(account);
     }

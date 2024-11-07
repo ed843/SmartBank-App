@@ -44,6 +44,7 @@ public class ProjectConstant {
     public static final String SQL_UPDATE_USER_FIRST_NAME = "UPDATE User SET first_name = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_USER_LAST_NAME = "UPDATE User SET last_name = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_ACCOUNT_BALANCE = "UPDATE Account SET balance = ? WHERE account_id = ?;";
+    public static final String SQL_UPDATE_ACCOUNT_TYPE = "UPDATE Account SET account_type = ? WHERE account_id = ?;";
     public static final String SQL_UPDATE_LOAN_APPLICATION_STATUS
             = "UPDATE LoanApplication SET application_status = ? WHERE application_id = ?;";
 

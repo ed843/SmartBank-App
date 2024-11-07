@@ -42,4 +42,5 @@ public class TransactionService {
     public List<Transaction> getTransactionByAccountId(Integer accountId) throws SQLException {
         return iTransactionManagement.findByAccountId(accountId);
     }
+
 }
