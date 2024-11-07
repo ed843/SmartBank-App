@@ -6,10 +6,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-
 public class SmartBankTest {
     private static final User USER_1 = new User() {
         {
