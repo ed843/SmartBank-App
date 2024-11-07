@@ -10,67 +10,64 @@ import projects.first_topic.smart_bank_app.services.TransactionService;
 import java.sql.SQLException;
 import java.util.List;
 
+import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountChoice;
+import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountService;
 import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.manageUserAuthentication;
-import static projects.first_topic.smart_bank_app.util.InputSanitation.getValidInputOrQ;
 
 public class TransactionManager {
 
     public static void logTransactions() {
         int userId = manageUserAuthentication();
         if (userId < 0) return;
-        AccountService accountService;
+        AccountService accountService = getAccountService();
         TransactionService transactionService;
         List<Account> accounts;
+        Account account;
         List<Transaction> transactions;
-        try {
-            accountService = new AccountService(DAOFactory.getDAOFactory((ProjectConstant.MYSQL)));
-        } catch (SQLException e) {
-            System.out.println("\nError initializing AccountService: " + e.getMessage());
-            return;
-        }
+
         try {
             accounts = accountService.getAccountsByUserId(userId);
+            if (accounts.isEmpty()) {
+                System.out.println("\nNo accounts associated with current user. Please create an account.");
+                return;
+            }
         } catch (SQLException e) {
-            System.out.println("\nError getting accounts: " + e.getMessage());
+            System.out.println("\nError retrieving account(s) information: " + e.getMessage());
             return;
         }
-        if (accounts.isEmpty()) {
-            System.out.println("\nNo accounts found");
-            return;
-        }
-        System.out.println("\nPlease choose from the following options:");
-        System.out.println("\t\tid\tbalance\ttype");
-        for(int i = 0; i < accounts.size(); i++) {
-            Account account = accounts.get(i);
-            System.out.println((i + 1) + ":\t\t" + account.getAccount_id() + "\t$" + account.getBalance() + "\t" + account.getAccount_type());
-        }
-        String userInput;
-        userInput = getValidInputOrQ("Which account (type 'q' to cancel)", "^[1-" + (accounts.size()) + "]$", "Please choose one of the following options");
-        if (userInput.equals("q")) {
-            return;
-        }
-        Account account = accounts.get(Integer.parseInt(userInput) - 1);
-        try {
-            transactionService = new TransactionService(DAOFactory.getDAOFactory((ProjectConstant.MYSQL)));
-        } catch (SQLException e) {
-            System.out.println("\nError initializing TransactionService: " + e.getMessage());
-            return;
-        }
+
+        account = getAccountChoice(accounts);
+
+        transactionService = getTransactionService();
+        if (transactionService == null) return;
+
         try {
             transactions = transactionService.getTransactionByAccountId(account.getAccount_id());
+            if (transactions.isEmpty()) {
+                System.out.println("\nNo transactions found");
+                return;
+            }
         } catch (SQLException e) {
-            System.out.println("\nError getting transactions: " + e.getMessage());
+            System.out.println("\nError retrieving transaction(s) information: " + e.getMessage());
             return;
         }
-        if (transactions.isEmpty()) {
-            System.out.println("\nNo transactions found");
-            return;
-        }
+
         System.out.println("\nid\t\tamount\t\ttype\t\tdate");
         for (int i = 0; i < transactions.size(); i++) {
             Transaction transaction = transactions.get(i);
             System.out.println(transaction.getTransaction_id()+ "\t\t" + transaction.getTransaction_amount() + "\t\t" + transaction.getTransaction_type() + "\t\t" + transaction.getTransaction_date());
         }
+    }
+
+    public static TransactionService getTransactionService() {
+        TransactionService transactionService;
+        try {
+            transactionService = new TransactionService(DAOFactory.getDAOFactory((ProjectConstant.MYSQL)));
+        } catch (SQLException e) {
+            System.out.println("\nError initializing TransactionService: " + e.getMessage());
+            return null;
+        }
+        return transactionService;
     }
 
 }

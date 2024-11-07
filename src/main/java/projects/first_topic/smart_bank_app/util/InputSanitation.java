@@ -7,6 +7,17 @@ import static projects.first_topic.smart_bank_app.commandline.Main.*;
 
 public class InputSanitation {
 
+    public static String isValidOptionNoPrompt(String userInput, String regex) {
+        if (userInput.equals("q")) {
+            return userInput;
+        } else if (Pattern.matches(regex, userInput)) {
+            return userInput;
+        } else {
+            System.out.println("\nInvalid option. Please try again.");
+            return null;
+        }
+    }
+
     public static String getValidInput(String prompt, String regex, String errorMessage) {
         while (true) {
             System.out.print(prompt + ": ");

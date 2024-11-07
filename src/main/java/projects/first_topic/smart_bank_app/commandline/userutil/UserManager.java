@@ -10,9 +10,12 @@ import projects.first_topic.smart_bank_app.services.UserService;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import static projects.first_topic.smart_bank_app.commandline.Main.*;
+import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountChoice;
+import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountService;
 import static projects.first_topic.smart_bank_app.util.InputSanitation.*;
 
 public class UserManager {
@@ -62,48 +65,46 @@ public class UserManager {
     public static void manageUser() {
         System.out.println("\nYou selected 'Manage user'");
         int userId = manageUserAuthentication();
-        if (userId != -1 && userId != -2) {
+        if (userId < 0) return;
+        String manageUserInput;
 
-            String manageUserInput;
+        do {
+            System.out.println("\nPlease pick one of the following options: ");
+            System.out.println("1. Edit name");
+            System.out.println("2. Edit username");
+            System.out.println("3. Edit password");
+            System.out.println("4. Edit membership");
+            System.out.println("5. Edit phone number");
+            System.out.println("6. Edit email");
+            System.out.println("Q. Quit");
+            System.out.print("Enter your choice: ");
 
-            do {
-                System.out.println("\nPlease pick one of the following options: ");
-                System.out.println("1. Edit name");
-                System.out.println("2. Edit username");
-                System.out.println("3. Edit password");
-                System.out.println("4. Edit membership");
-                System.out.println("5. Edit phone number");
-                System.out.println("6. Edit email");
-                System.out.println("Q. Quit");
-                System.out.print("Enter your choice: ");
+            manageUserInput = scanner.nextLine().trim().toLowerCase();
 
-                manageUserInput = scanner.nextLine().trim().toLowerCase();
+            switch (manageUserInput) {
+                case "1":
+                    editName(userId);
+                    break;
+                case "2":
+                    editUsername(userId);
+                    break;
+                case "3":
+                    editPassword(userId);
+                    break;
+                case "4":
+                    editUserType(userId);
+                    break;
+                case "5":
+                    editUserPhoneNumber(userId);
+                    break;
+                case "6":
+                    editUserEmail(userId);
+                    break;
+                default:
+                    System.out.println("\nInvalid option. Please try again.");
 
-                switch (manageUserInput) {
-                    case "1":
-                        editName(userId);
-                        break;
-                    case "2":
-                        editUsername(userId);
-                        break;
-                    case "3":
-                        editPassword(userId);
-                        break;
-                    case "4":
-                        editUserType(userId);
-                        break;
-                    case "5":
-                        editUserPhoneNumber(userId);
-                        break;
-                    case "6":
-                        editUserEmail(userId);
-                        break;
-                    default:
-                        System.out.println("\nInvalid option. Please try again.");
-
-                }
-            } while (!manageUserInput.equals("q"));
-        }
+            }
+        } while (!manageUserInput.equals("q"));
     }
 
     private static void editName(int userId) {
@@ -166,6 +167,7 @@ public class UserManager {
         try {
             UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
             User user = userService.getUser(userId);
+            List<Account> accounts= null;
             Account account = null;
             AccountService accountService = null;
             String userInput;
@@ -190,22 +192,36 @@ public class UserManager {
 
                         userInput = scanner.nextLine().trim().toLowerCase();
 
-                        if (!isValidOption(userInput) && !userInput.equals("q")) {
-                            System.out.println("\nInvalid option. Please try again.\n");
-                        }
-                    } while (!isValidOption(userInput) && !userInput.equals("q"));
+                        userInput = isValidOptionNoPrompt(userInput, "^[1-3]$");
 
-                    if (isValidOption(userInput)) {
+                    } while (userInput == null);
+
+                    if (!userInput.equals("q")) {
+                        accountService = getAccountService();
+
+                        if(accountService == null) return;
+
                         try {
-                            accountService = new AccountService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
-                            account = accountService.getAccountByUserId(userId);
-                            if (account == null) {
-                                System.out.println("\nNo account associated with current user. Please create an account.");
+                            accounts = accountService.getAccountsByUserId(userId);
+                            if (accounts.isEmpty()) {
+                                System.out.println("\nNo accounts associated with current user. Please create an account.");
                                 return;
                             }
                         } catch (SQLException e) {
-                            System.out.println("\nError retrieving account information: " + e.getMessage());
+                            System.out.println("\nError retrieving account(s) information: " + e.getMessage());
                             return;
+                        }
+
+                        while (true) {
+                            account = getAccountChoice(accounts);
+                            if (account == null) {
+                                return;
+                            } else if (account.getAccount_type().equals("SAVINGS_ACCOUNT")) {
+                                System.out.println("\nCannot charge account of type: " + account.getAccount_type());
+                                System.out.println("Please select a different account.");
+                            } else {
+                                break;
+                            }
                         }
                     }
 
@@ -240,8 +256,6 @@ public class UserManager {
                             userService.updateUserType(user, "VIP_USER");
                             System.out.println("\nSuccessfully updated to 'VIP User'");
                             return;
-                        case "q":
-                            return;
                     }
 
                     break;
@@ -258,22 +272,35 @@ public class UserManager {
 
                         userInput = scanner.nextLine().trim().toLowerCase();
 
-                        if (!isValidOption(userInput) && !userInput.equals("q")) {
-                            System.out.println("\nInvalid option. Please try again.\n");
-                        }
-                    } while (!isValidOption(userInput) && !userInput.equals("q"));
+                        userInput = isValidOptionNoPrompt(userInput, "^[1-3]$");
+                    } while (userInput == null);
 
-                    if (isValidOption(userInput)) {
+                    if (!userInput.equals("q")) {
+                        accountService = getAccountService();
+
+                        if(accountService == null) return;
+
                         try {
-                            accountService = new AccountService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
-                            account = accountService.getAccountByUserId(userId);
-                            if (account == null) {
-                                System.out.println("\nNo account associated with current user. Please create an account.");
+                            accounts = accountService.getAccountsByUserId(userId);
+                            if (accounts.isEmpty()) {
+                                System.out.println("\nNo accounts associated with current user. Please create an account.");
                                 return;
                             }
                         } catch (SQLException e) {
-                            System.out.println("\nError retrieving account information: " + e.getMessage());
+                            System.out.println("\nError retrieving account(s) information: " + e.getMessage());
                             return;
+                        }
+
+                        while (true) {
+                            account = getAccountChoice(accounts);
+                            if (account == null) {
+                                return;
+                            } else if (account.getAccount_type().equals("SAVINGS_ACCOUNT")) {
+                                System.out.println("\nCannot charge account of type: " + account.getAccount_type());
+                                System.out.println("Please select a different account.");
+                            } else {
+                                break;
+                            }
                         }
                     }
 
@@ -319,22 +346,36 @@ public class UserManager {
 
                         userInput = scanner.nextLine().trim().toLowerCase();
 
-                        if (!isValidOption(userInput) && !userInput.equals("q")) {
-                            System.out.println("\nInvalid option. Please try again.\n");
-                        }
-                    } while (!isValidOption(userInput) && !userInput.equals("q"));
+                        userInput = isValidOptionNoPrompt(userInput, "^[1-3]$");
+                    } while (userInput == null);
 
-                    if (isValidOption(userInput)) {
+                    if (!userInput.equals("q")) {
+                        accountService = getAccountService();
+
+                        if(accountService == null) return;
+
                         try {
-                            accountService = new AccountService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
-                            account = accountService.getAccountByUserId(userId);
-                            if (account == null) {
-                                System.out.println("\nNo account associated with current user. Please create an account.");
+                            accounts = accountService.getAccountsByUserId(userId);
+                            if (accounts.isEmpty()) {
+                                System.out.println("\nNo accounts associated with current user. Please create an account.");
                                 return;
                             }
                         } catch (SQLException e) {
-                            System.out.println("\nError retrieving account information: " + e.getMessage());
+                            System.out.println("\nError retrieving account(s) information: " + e.getMessage());
                             return;
+                        }
+
+                        while (true) {
+                            account = getAccountChoice(accounts);
+
+                            if (account == null) {
+                                return;
+                            } else if (account.getAccount_type().equals("SAVINGS_ACCOUNT")) {
+                                System.out.println("\nCannot charge account of type: " + account.getAccount_type());
+                                System.out.println("Please select a different account.");
+                            } else {
+                                break;
+                            }
                         }
                     }
 
@@ -357,8 +398,6 @@ public class UserManager {
                             userService.updateUserType(user, "VIP_USER");
                             System.out.println("\nSuccessfully upgraded to 'VIP User'");
                             return;
-                        case "q":
-                            return;
                     }
 
                     break;
@@ -372,10 +411,8 @@ public class UserManager {
 
                         userInput = scanner.nextLine().trim().toLowerCase();
 
-                        if (!isValidOption(userInput) && !userInput.equals("q")) {
-                            System.out.println("\nInvalid option. Please try again.\n");
-                        }
-                    } while (!isValidOption(userInput) && !userInput.equals("q"));
+                        userInput = isValidOptionNoPrompt(userInput, "^[1-3]$");
+                    } while (userInput == null);
 
                     switch (userInput) {
                         case "1":
@@ -389,18 +426,12 @@ public class UserManager {
                         case "3":
                             userService.updateUserType(user, "PLATINUM_USER");
                             System.out.println("\nSuccessfully downgraded to 'Platinum User'");
-                            return;
+                            break;
                     }
-
-                    break;
             }
         } catch (SQLException e) {
             System.out.println("\nError updating membership: " + e.getMessage());
         }
-    }
-
-    private static boolean isValidOption(String userInput) {
-        return userInput.equals("1") || userInput.equals("2") || userInput.equals("3");
     }
 
     private static void editUserPhoneNumber(int userId) {
