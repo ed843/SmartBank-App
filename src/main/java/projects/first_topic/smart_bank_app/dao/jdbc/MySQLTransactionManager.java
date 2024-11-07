@@ -6,6 +6,9 @@ import projects.first_topic.smart_bank_app.dao.*;
 import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.model.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import static projects.first_topic.smart_bank_app.constant.ProjectConstant.*;
 import static projects.first_topic.smart_bank_app.util.DAOUtil.preparedStatement;
 
@@ -107,6 +110,24 @@ public class MySQLTransactionManager implements ITransactionManagement {
             throw new SQLException(e);
         }
         return transaction;
+    }
+
+    @Override
+    public List<Transaction> findByAccountId(Integer account_id) throws SQLException {
+        List<Transaction> transactions = new ArrayList<>();
+        Object[] values = {account_id};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_TRANSACTIONS_BY_ACCOUNT_ID,
+                     false,values);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Transaction transaction = getTransactionFromResultSet(resultSet);
+                transactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return transactions;
     }
 
     /**

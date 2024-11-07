@@ -42,6 +42,67 @@ public class MySQLUserManager implements IUserManagement {
     }
 
     @Override
+    public User findByLogin(String username, String password) throws SQLException {
+        User user = null;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_BY_LOGIN,
+                     false, username, password);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                user = getUserFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return user;
+    }
+
+    @Override
+    public void updateFirstName(User user, String firstName) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {firstName, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_FIRST_NAME, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateLastName(User user, String lastName) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {lastName, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_LAST_NAME, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateUserUsername(User user, String username) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {username, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_USERNAME, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
     public void updateUserPassword(User user, String password) throws SQLException {
         if (user.getUser_id() == null) {
             throw new IllegalArgumentException("User does not exist.");
@@ -50,6 +111,51 @@ public class MySQLUserManager implements IUserManagement {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement
                      = preparedStatement(connection, SQL_UPDATE_USER_PASSWORD, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateUserType(User user, String type) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {type, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_TYPE, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateUserPhoneNumber(User user, String phoneNumber) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {phoneNumber, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_PHONE_NUMBER, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateUserEmail(User user, String email) throws SQLException {
+        if (user.getUser_id() == null) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        Object[] values = {email, user.getUser_id()};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement
+                     = preparedStatement(connection, SQL_UPDATE_USER_EMAIL, false, values)) {
             statement.executeUpdate();
         } catch(SQLException e) {
             throw new SQLException(e);

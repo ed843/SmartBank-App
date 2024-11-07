@@ -26,15 +26,23 @@ public class ProjectConstant {
 
     // SELECT/READ of CRUD
     public static final String SQL_FIND_BY_USER_ID = "SELECT * FROM User WHERE user_id = ?;";
+    public static final String SQL_FIND_BY_LOGIN = "SELECT * FROM User WHERE user_name = ? AND password = ?;";
     public static final String SQL_FIND_BY_ACCOUNT_ID = "SELECT * FROM Account WHERE account_id = ?;";
     public static final String SQL_FIND_ACCOUNT_BY_USER_ID = "SELECT * FROM Account WHERE user_id = ?;";
     public static final String SQL_FIND_BY_LOAN_APPLICATION_ID
             = "SELECT * FROM LoanApplication WHERE application_id = ?;";
     public static final String SQL_FIND_BY_TRANSACTION_ID = "SELECT * FROM Transaction WHERE transaction_id = ?;";
+    public static final String SQL_FIND_TRANSACTIONS_BY_ACCOUNT_ID = "SELECT * FROM Transaction WHERE account_id = ?;";
 
 
     // UPDATE of CRUD
+    public static final String SQL_UPDATE_USER_USERNAME = "UPDATE User SET user_name = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_USER_PASSWORD = "UPDATE User SET password = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_TYPE = "UPDATE User SET user_type = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_PHONE_NUMBER = "UPDATE User SET phone = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_EMAIL = "UPDATE User SET email = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_FIRST_NAME = "UPDATE User SET first_name = ? WHERE user_id = ?;";
+    public static final String SQL_UPDATE_USER_LAST_NAME = "UPDATE User SET last_name = ? WHERE user_id = ?;";
     public static final String SQL_UPDATE_ACCOUNT_BALANCE = "UPDATE Account SET balance = ? WHERE account_id = ?;";
     public static final String SQL_UPDATE_LOAN_APPLICATION_STATUS
             = "UPDATE LoanApplication SET application_status = ? WHERE application_id = ?;";
