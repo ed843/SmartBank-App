@@ -130,6 +130,24 @@ public class MySQLTransactionManager implements ITransactionManagement {
         return transaction;
     }
 
+    @Override
+    public List<Transaction> findByAccountId(Integer account_id) throws SQLException {
+        List<Transaction> transactions = new ArrayList<>();
+        Object[] values = {account_id};
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_TRANSACTIONS_BY_ACCOUNT_ID,
+                     false,values);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Transaction transaction = getTransactionFromResultSet(resultSet);
+                transactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+        return transactions;
+    }
+
     /**
      * Mapped Account from the current row of the given ResultSet
      */

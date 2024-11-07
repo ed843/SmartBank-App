@@ -7,7 +7,7 @@ import projects.first_topic.smart_bank_app.model.User;
 
 
 public class UserService {
-    private final IUserManagement iUserManagement;
+    private static IUserManagement iUserManagement = null;
 
     public UserService(DAOFactory daoFactory) throws DAOException {
         this.iUserManagement = daoFactory.getUserManagement();
@@ -61,7 +61,7 @@ public class UserService {
         iUserManagement.deleteUser(user);
     }
 
-    public User getUser(Integer id) throws SQLException {
+    public static User getUser(Integer id) throws SQLException {
         return iUserManagement.findById(id);
     }
 
