@@ -61,7 +61,7 @@ public class UserService {
         iUserManagement.deleteUser(user);
     }
 
-    public static User getUser(Integer id) throws SQLException {
+    public User getUser(Integer id) throws SQLException {
         return iUserManagement.findById(id);
     }
 

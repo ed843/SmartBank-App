@@ -1,5 +1,7 @@
 package projects.first_topic.smart_bank_app.loanManager;
 
+import projects.first_topic.smart_bank_app.constant.ProjectConstant;
+import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.model.User;
 import projects.first_topic.smart_bank_app.services.LoanApplicationService;
 import projects.first_topic.smart_bank_app.services.UserService;
@@ -8,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import static projects.first_topic.smart_bank_app.commandline.Main.scanner;
+import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.manageUserAuthentication;
 
 public class LoanHandler {
 
@@ -15,8 +18,8 @@ public class LoanHandler {
         try {
             System.out.println("\n=== Loan Application Form ===");
 
-            Integer userId = getUserId();
-            if (userId == null) return;
+            Integer userId = manageUserAuthentication();
+            if (userId < 0) return;
 
             User user = validateUser(userId);
             if (user == null) return;
@@ -41,18 +44,14 @@ public class LoanHandler {
         }
     }
 
-    private static Integer getUserId() {
-        System.out.print("Enter user ID: ");
-        try {
-            return Integer.parseInt(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Invalid user ID");
-            return null;
-        }
-    }
-
     private static User validateUser(Integer userId) throws SQLException {
-        User user = UserService.getUser(userId);
+        UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        User user = null;
+        try {
+            user = userService.getUser(userId);
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
         if (user == null) {
             System.out.println("Error: User not found");
         }

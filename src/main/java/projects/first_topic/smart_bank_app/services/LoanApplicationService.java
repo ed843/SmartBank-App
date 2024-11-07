@@ -3,6 +3,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.dao.IAccountManagement;
 import projects.first_topic.smart_bank_app.dao.ILoanApplicationManagement;
 import projects.first_topic.smart_bank_app.dao.IUserManagement;
@@ -14,19 +15,15 @@ import projects.first_topic.smart_bank_app.model.*;
 
 public class LoanApplicationService {
     private static ILoanApplicationManagement iLoanApplicationManagement = null;
-    private static IUserManagement iUserManagement = null;
-    private static IAccountManagement iAccountManagement;
 
 //    public LoanApplicationService(DAOFactory daoFactory) throws DAOException {
 //        this.iLoanApplicationManagement = daoFactory.getLoanApplicationManagement();
 //    }
 public LoanApplicationService(DAOFactory daoFactory) throws DAOException {
-    iLoanApplicationManagement = daoFactory.getLoanApplicationManagement();
-    iUserManagement = daoFactory.getUserManagement();
-    iAccountManagement = daoFactory.getAccountManagement();
+    this.iLoanApplicationManagement = daoFactory.getLoanApplicationManagement();
 }
 
-    public static void createLoanApplication(LoanApplication loanApplication) throws SQLException {
+    public void createLoanApplication(LoanApplication loanApplication) throws SQLException {
         iLoanApplicationManagement.create(loanApplication);
     }
 
@@ -54,7 +51,9 @@ public LoanApplicationService(DAOFactory daoFactory) throws DAOException {
         return iLoanApplicationManagement.findById(id);
     }
     public static void applyForLoan(Integer userId, String loanType, double amount, String startDate, String endDate) throws SQLException {
-        User user = iUserManagement.findById(userId);
+
+        UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        User user = userService.getUser(userId);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
@@ -68,26 +67,47 @@ public LoanApplicationService(DAOFactory daoFactory) throws DAOException {
         loanApplication.setApplication_date(LocalDate.now().toString());
 
        // createLoanApplication(loanApplication);
-
+        LoanApplicationService loanApplicationService;
         // Create the application
-        iLoanApplicationManagement.create(loanApplication);
+        try {
+            loanApplicationService = new LoanApplicationService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error while creating loan application:" + e.getMessage());
+            return;
+        }
+        loanApplicationService.createLoanApplication(loanApplication);
 
         // Assess eligibility
         assessLoanEligibility(loanApplication);
 
         // Print result
-        LoanApplication updatedApplication = iLoanApplicationManagement.findById(loanApplication.getApplication_id());
+        LoanApplication updatedApplication = loanApplicationService.getLoanApplication(loanApplication.getApplication_id());
         System.out.println("Loan application status: " + updatedApplication.getApplication_status());
     }
 
     private static void assessLoanEligibility(LoanApplication loanApplication) throws SQLException {
-        User user = iUserManagement.findById(loanApplication.getUser_id());
+        UserService userService;
+        try {
+            userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error while creating user:" + e.getMessage());
+            return;
+        }
+        User user = userService.getUser(loanApplication.getUser_id());
         if (user == null) {
             throw new IllegalArgumentException("User not found during assessment");
         }
 
         // Calculate total current balance
-        double totalBalance = iAccountManagement.totalUserBalance(user.getUser_id());
+        AccountService accountService;
+        try {
+            accountService = new AccountService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error while finding account:" + e.getMessage());
+            return;
+        }
+
+        double totalBalance = accountService.totalUserBalance(user.getUser_id());
         double debtToIncomeRatio = calculateDebtToIncomeRatio(user, loanApplication.getAmount());
 
 //        if (debtToIncomeRatio <= 0.43 && user.getCredit_score() >= 650) {
@@ -105,6 +125,12 @@ public LoanApplicationService(DAOFactory daoFactory) throws DAOException {
             approved = true;
         }
         loanApplication.setApplication_status(approved ? "approved" : "declined");
+        LoanApplicationService loanApplicationService;
+        try {
+            loanApplicationService = new LoanApplicationService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error while creating loan application:" + e.getMessage());
+        }
         iLoanApplicationManagement.updateLoanApplicationStatus(loanApplication);
         //updateApplicationStatus(loanApplication);
     }
