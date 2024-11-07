@@ -1,17 +1,20 @@
 package projects.first_topic.smart_bank_app;
 
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
-import projects.first_topic.smart_bank_app.exception.DAOException;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
 import projects.first_topic.smart_bank_app.loanManager.LoanHandler;
+import projects.first_topic.smart_bank_app.model.Account;
+import projects.first_topic.smart_bank_app.model.Transaction;
 import projects.first_topic.smart_bank_app.model.User;
 import projects.first_topic.smart_bank_app.services.AccountService;
 import projects.first_topic.smart_bank_app.services.LoanApplicationService;
+import projects.first_topic.smart_bank_app.services.TransactionService;
 import projects.first_topic.smart_bank_app.services.UserService;
-import projects.first_topic.smart_bank_app.constant.ProjectConstant.*;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -20,14 +23,16 @@ public class Main {
     private static UserService userService;
     private static LoanApplicationService loanService;
     private static AccountService accountService;
-    public static void main(String[] args) {
+    private static TransactionService transactionService;
 
+    public static void main(String[] args) {
         try {
             // Initialize services
             DAOFactory daoFactory = DAOFactory.getDAOFactory(ProjectConstant.MYSQL);
             userService = new UserService(daoFactory);
             loanService = new LoanApplicationService(daoFactory);
             accountService = new AccountService(daoFactory);
+            transactionService = new TransactionService(daoFactory);
 
             String userInput;
             do {
@@ -52,8 +57,7 @@ public class Main {
                         createUser();
                         break;
                     case "2":
-                        System.out.println("You selected 'Manage user'");
-                        // Add code for Option 2
+                        manageUser();
                         break;
                     case "3":
                         System.out.println("You selected 'Create account'");
@@ -72,8 +76,7 @@ public class Main {
                         LoanHandler.applyForLoanMenu();
                         break;
                     case "7":
-                        System.out.println("You selected 'Transaction log'");
-                        // Add code for Option 3
+                        logTransactions();
                         break;
                     case "q":
                         System.out.println("Exiting the program. Goodbye!");
@@ -82,10 +85,11 @@ public class Main {
                         System.out.println("Invalid option. Please try again.");
                 }
             } while (!userInput.equals("q"));
-        } catch (DAOException e) {
+        } catch (SQLException e) {
             System.out.println("Error initializing services: " + e.getMessage());
             return;
         }
+
         scanner.close();
     }
 
@@ -94,13 +98,26 @@ public class Main {
             System.out.println("You selected 'Create user'");
             System.out.println("Create User Form");
 
-            String firstName = getValidInput("First name", "[a-zA-Z]{2,30}", "First name must be 2-30 alphabetic characters");
-            String lastName = getValidInput("Last name", "[a-zA-Z]{2,30}", "Last name must be 2-30 alphabetic characters");
-            String email = getValidInput("Email", "^[A-Za-z0-9+_.-]+@(.+)$", "Invalid email format");
-            String username = getValidInput("Username", "^[a-zA-Z0-9_]{3,20}$", "Username must be 3-20 alphanumeric characters or underscores");
-            String password = getValidInput("Password", ".{8,}", "Password must be at least 8 characters long");
-            String phoneNumber = getValidInput("Phone number", "^\\d{10}$", "Phone number must be 10 digits");
+            String firstName = getValidInput("First name", "[a-zA-Z]{2,30}",
+                    "First name must be 2-30 alphabetic characters");
+
+            String lastName = getValidInput("Last name", "[a-zA-Z]{2,30}",
+                    "Last name must be 2-30 alphabetic characters");
+
+            String email = getValidInput("Email", "^[A-Za-z0-9+_.-]+@(.+)$",
+                    "Invalid email format");
+
+            String username = getValidInput("Username", "^[a-zA-Z0-9_]{3,20}$",
+                    "Username must be 3-20 alphanumeric characters or underscores");
+
+            String password = getValidInput("Password", ".{8,}",
+                    "Password must be at least 8 characters long");
+
+            String phoneNumber = getValidInput("Phone number", "^\\d{10}$",
+                    "Phone number must be 10 digits");
+
             int creditScore = getValidIntInput("Credit score", 300, 850);
+
             double annualIncome = getValidDoubleInput("Annual income", 0, Double.MAX_VALUE);
 
             String userType = "NEW_USER";
@@ -116,11 +133,273 @@ public class Main {
         }
     }
 
+    public static void manageUser() {
+        System.out.println("You selected 'Manage user'");
+        int userId = manageUserAuthentication();
+        if (userId != -1) {
+
+            String manageUserInput;
+
+            do {
+                System.out.println("Please pick one of the following options: ");
+                System.out.println("1. Edit name");
+                System.out.println("2. Edit username");
+                System.out.println("3. Edit password");
+                System.out.println("4. Edit membership");
+                System.out.println("5. Edit phone number");
+                System.out.println("6. Edit email");
+                System.out.println("Q. Quit");
+                System.out.print("Enter your choice: ");
+
+                manageUserInput = scanner.nextLine().trim().toLowerCase();
+
+                switch (manageUserInput) {
+                    case "1":
+                        editName(userId);
+                        break;
+                    case "2":
+                        editUsername(userId);
+                        break;
+                    case "3":
+                        editPassword(userId);
+                        break;
+                    case "4":
+                        editUserType(userId);
+                        break;
+                    case "5":
+                        editUserPhoneNumber(userId);
+                        break;
+                    case "6":
+                        editUserEmail(userId);
+                        break;
+
+                }
+            } while (!manageUserInput.equals("q"));
+        }
+    }
+
+    public static void editName(int userId) {
+        System.out.println("You selected 'Edit name'");
+        String newFirstName = getValidInputOrQ("Please enter your first name (type 'q' to cancel)", "[a-zA-Z]{2,30}",
+                "First name must be 2-30 alphabetic characters");
+        if (newFirstName.equals("q")) return;
+        String newLastName = getValidInputOrQ("Please enter your last name (type 'q' to cancel)", "[a-zA-Z]{2,30}",
+                "Last name must be 2-30 alphabetic characters");
+        if (newLastName.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            if (!Objects.equals(user.getFirst_name(), newFirstName)) {
+                userService.updateFirstName(user, newFirstName);
+            }
+            if (!Objects.equals(user.getLast_name(), newLastName)) {
+                userService.updateLastName(user, newLastName);
+            }
+            System.out.println("Name successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating name: " + e.getMessage());
+        }
+    }
+
+    public static void editUsername(int userId) {
+        System.out.println("You selected 'Edit username'");
+        String newUsername = getValidInputOrQ("Enter your new username (type 'q' to cancel)", "^[a-zA-Z0-9_]{3,20}$",
+                "Username must be 3-20 alphanumeric characters or underscores");
+        if (newUsername.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserUsername(user, newUsername);
+            System.out.println("Username successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating username: " + e.getMessage());
+        }
+    }
+
+    public static void editPassword(int userId) {
+        System.out.println("You selected 'Edit password'");
+        String newPassword = getValidInputOrQ("Enter your new password (type 'q' to cancel)", ".{8,}",
+                "Password must be at least 8 characters long");
+        if (newPassword.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserPassword(user, newPassword);
+            System.out.println("Password successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating password: " + e.getMessage());
+        }
+    }
+    // 'NEW_USER', 'REWARD_USER', 'PLATINUM_USER', 'VIP'
+    public static void editUserType(int userId) {
+        System.out.println("You selected 'Edit membership'");
+        System.out.println("Please select from the following options:");
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            switch(user.getUser_type()) {
+                case "NEW_USER":
+
+                    System.out.println("1. Rewards User (a $25 charge will be made)");
+                    System.out.println("2. Platinum User (a $50 charge will be made)");
+                    System.out.println("3. VIP User (a $75 charge will be made)");
+                    System.out.println("Q. Quit");
+
+                    String userInput;
+                    // TODO: Charges are currently unimplemented
+                    do {
+                        userInput = scanner.nextLine().trim().toLowerCase();
+                        switch (userInput) {
+                            case "1":
+                                userService.updateUserType(user, "REWARD_USER");
+                                System.out.println("Successfully updated to 'Rewards User'");
+                                return;
+                            case "2":
+                                userService.updateUserType(user, "PLATINUM_USER");
+                                System.out.println("Successfully updated to 'Platinum User'");
+                                return;
+                            case "3":
+                                userService.updateUserType(user, "VIP_USER");
+                                System.out.println("Successfully updated to 'VIP User'");
+                                return;
+                        }
+                    } while (!userInput.equals("q"));
+                    break;
+                case "REWARD_USER":
+                    System.out.println("1. Downgrade to Regular User");
+                    System.out.println("2. Platinum User (a $25 charge will be made)");
+                    System.out.println("3. VIP User (a $50 charge will be made)");
+                    System.out.println("Q. Quit");
+
+                    String userInput1;
+
+                    do {
+                        userInput1 = scanner.nextLine().trim().toLowerCase();
+                        switch (userInput1) {
+                            case "1":
+                                userService.updateUserType(user, "NEW_USER");
+                                System.out.println("Successfully downgraded to 'Regular User'");
+                                return;
+                            case "2":
+                                userService.updateUserType(user, "PLATINUM_USER");
+                                System.out.println("Successfully upgraded to 'Platinum User'");
+                                return;
+                            case "3":
+                                userService.updateUserType(user, "VIP_USER");
+                                System.out.println("Successfully upgraded to 'VIP User'");
+                                return;
+                        }
+                    } while (!userInput1.equals("q"));
+                    break;
+                case "PLATINUM_USER":
+                    System.out.println("1. Downgrade to Regular User");
+                    System.out.println("2. Downgrade to Rewards User");
+                    System.out.println("3. VIP User (a $25 charge will be made)");
+                    System.out.println("Q. Quit");
+
+                    String userInput2;
+
+                    do {
+                        userInput2 = scanner.nextLine().trim().toLowerCase();
+                        switch (userInput2) {
+                            case "1":
+                                userService.updateUserType(user, "NEW_USER");
+                                System.out.println("Successfully downgraded to 'Regular User'");
+                                return;
+                            case "2":
+                                userService.updateUserType(user, "REWARD_USER");
+                                System.out.println("Successfully downgraded to 'Rewards User'");
+                                return;
+                            case "3":
+                                userService.updateUserType(user, "VIP_USER");
+                                System.out.println("Successfully upgraded to 'VIP User'");
+                                return;
+                        }
+                    } while (!userInput2.equals("q"));
+                    return;
+                case "VIP":
+                    System.out.println("1. Downgrade to Regular User");
+                    System.out.println("2. Downgrade to Rewards User");
+                    System.out.println("3. Downgrade to Platinum User");
+                    System.out.println("Q. Quit");
+
+                    String userInput3;
+
+                    do {
+                        userInput3 = scanner.nextLine().trim().toLowerCase();
+                        switch (userInput3) {
+                            case "1":
+                                userService.updateUserType(user, "NEW_USER");
+                                System.out.println("Successfully downgraded to 'Regular User'");
+                                return;
+                            case "2":
+                                userService.updateUserType(user, "REWARD_USER");
+                                System.out.println("Successfully downgraded to 'Rewards User'");
+                                return;
+                            case "3":
+                                userService.updateUserType(user, "PLATINUM_USER");
+                                System.out.println("Successfully downgraded to 'Platinum User'");
+                                return;
+                        }
+                    } while (!userInput3.equals("q"));
+                    break;
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating membership: " + e.getMessage());
+        }
+    }
+
+    public static void editUserPhoneNumber(int userId) {
+        System.out.println("You selected 'Edit phone number'");
+        String newPhoneNumber = getValidInputOrQ("Enter your new phone number (type 'q' to cancel)", "^\\d{10}$",
+                "Phone number must be 10 digits");
+        if (newPhoneNumber.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserPhoneNumber(user, newPhoneNumber);
+            System.out.println("Phone number successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating phone number: " + e.getMessage());
+        }
+    }
+
+    public static void editUserEmail(int userId) {
+        System.out.println("You selected 'Edit email'");
+        String newEmail = getValidInputOrQ("Enter your new email (type 'q' to cancel)", "^[A-Za-z0-9+_.-]+@(.+)$",
+                "Invalid email format");
+        if (newEmail.equals("q")) return;
+        try {
+            UserService userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+            User user = userService.getUser(userId);
+            userService.updateUserEmail(user, newEmail);
+            System.out.println("Phone number successfully updated!");
+        } catch (SQLException e) {
+            System.out.println("Error updating phone number: " + e.getMessage());
+        }
+    }
+
+    // Helper functions
+
     private static String getValidInput(String prompt, String regex, String errorMessage) {
         while (true) {
             System.out.print(prompt + ": ");
             String input = scanner.nextLine().trim();
             if (Pattern.matches(regex, input)) {
+                return input;
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    private static String getValidInputOrQ(String prompt, String regex, String errorMessage) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print(prompt + ": ");
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("q")) return "q";
+            if (input.matches(regex)) {
                 return input;
             }
             System.out.println(errorMessage);
@@ -154,6 +433,101 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number");
             }
+        }
+    }
+
+    /**
+     * Authenticates a user and returns their user ID.
+     *
+     * @return The user ID if authentication is successful, -1 if the user chooses to quit, or -2 if authentication fails.
+     */
+    public static int manageUserAuthentication() {
+        UserService userService;
+        try {
+            userService = new UserService(DAOFactory.getDAOFactory(ProjectConstant.MYSQL));
+        } catch (SQLException e) {
+            System.out.println("Error initializing UserService: " + e.getMessage());
+            return -2;
+        }
+
+        System.out.println("Please login: (enter 'q' at any prompt to go back)");
+
+        while (true) {
+            String username = getValidInputOrQ("Username", "^[a-zA-Z0-9_]{3,20}$", "Username must be 3-20 alphanumeric characters or underscores");
+            if (username.equalsIgnoreCase("q")) return -1;
+
+            String password = getValidInputOrQ("Password", ".{8,}", "Password must be at least 8 characters long");
+            if (password.equalsIgnoreCase("q")) return -1;
+
+            try {
+                User user = userService.getUserByLogin(username, password);
+                if (user != null) {
+                    System.out.println("Login successful!");
+                    return user.getUser_id();
+                } else {
+                    System.out.println("Invalid username or password. Please try again.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error during authentication: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void logTransactions() {
+        int userId = manageUserAuthentication();
+        if (userId < 0) return;
+        AccountService accountService;
+        TransactionService transactionService;
+        List<Account> accounts;
+        List<Transaction> transactions;
+        try {
+            accountService = new AccountService(DAOFactory.getDAOFactory((ProjectConstant.MYSQL)));
+        } catch (SQLException e) {
+            System.out.println("Error initializing AccountService: " + e.getMessage());
+            return;
+        }
+        try {
+            accounts = accountService.getAccountsByUserId(userId);
+        } catch (SQLException e) {
+            System.out.println("Error getting accounts: " + e.getMessage());
+            return;
+        }
+        if (accounts.isEmpty()) {
+            System.out.println("No accounts found");
+            return;
+        }
+        System.out.println("Please choose from the following options:");
+        System.out.println("\t\tid\tbalance\ttype");
+        for(int i = 0; i < accounts.size(); i++) {
+            Account account = accounts.get(i);
+            System.out.println((i + 1) + ":\t\t" + account.getAccount_id() + "\t$" + account.getBalance() + "\t" + account.getAccount_type());
+        }
+        String userInput;
+        userInput = getValidInputOrQ("Which account (type 'q' to cancel)", "^[1-" + (accounts.size()) + "]$", "Please choose one of the following options");
+        if (userInput.equals("q")) {
+            return;
+        }
+        Account account = accounts.get(Integer.parseInt(userInput) - 1);
+        try {
+            transactionService = new TransactionService(DAOFactory.getDAOFactory((ProjectConstant.MYSQL)));
+        } catch (SQLException e) {
+            System.out.println("Error initializing TransactionService: " + e.getMessage());
+            return;
+        }
+        try {
+            transactions = transactionService.getTransactionByAccountId(account.getAccount_id());
+        } catch (SQLException e) {
+            System.out.println("Error getting transactions: " + e.getMessage());
+            return;
+        }
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found");
+            return;
+        }
+        System.out.println("id\t\tamount\t\ttype\t\tdate");
+        for (int i = 0; i < transactions.size(); i++) {
+            Transaction transaction = transactions.get(i);
+            System.out.println(transaction.getTransaction_id()+ "\t\t" + transaction.getTransaction_amount() + "\t\t" + transaction.getTransaction_type() + "\t\t" + transaction.getTransaction_date());
         }
     }
 }
