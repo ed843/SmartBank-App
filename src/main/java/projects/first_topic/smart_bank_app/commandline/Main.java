@@ -1,5 +1,11 @@
 package projects.first_topic.smart_bank_app.commandline;
 
+import projects.first_topic.smart_bank_app.constant.ProjectConstant;
+import projects.first_topic.smart_bank_app.factory.DAOFactory;
+import projects.first_topic.smart_bank_app.model.Transaction;
+import projects.first_topic.smart_bank_app.services.TransactionService;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.*;

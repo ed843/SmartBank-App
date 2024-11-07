@@ -6,10 +6,15 @@ public class Transaction {
     private String transaction_type;
     private double transaction_amount;
     private String transaction_date;
-    private double account_balance_before;
-    private double account_balance_after;
 
     public Transaction() {
+    }
+
+    public Transaction(Integer account_id, String transaction_type, double transaction_amount, String transaction_date) {
+        this.account_id = account_id;
+        this.transaction_type = transaction_type;
+        this.transaction_amount = transaction_amount;
+        this.transaction_date = transaction_date;
     }
 
     public Integer getTransaction_id() {
@@ -48,20 +53,5 @@ public class Transaction {
         this.transaction_date = transaction_date;
     }
 
-    public double getAccount_balance_before() {
-        return account_balance_before;
-    }
-
-    public void setAccount_balance_before(double account_balance_before) {
-        this.account_balance_before = account_balance_before;
-    }
-
-    public double getAccount_balance_after() {
-        return account_balance_after;
-    }
-
-    public void setAccount_balance_after(double account_balance_after) {
-        this.account_balance_after = account_balance_after;
-    }
 
 }

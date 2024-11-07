@@ -59,8 +59,7 @@ public class MySQLTransactionManager implements ITransactionManagement {
 
                 // Create the transaction
                 values = new Object[]{transaction.getAccount_id(), transaction.getTransaction_type(),
-                        transaction.getTransaction_amount(), transaction.getTransaction_date(),
-                        balance_before, balance_after};
+                        transaction.getTransaction_amount(), transaction.getTransaction_date()};
                 try (Connection connection = DBConnection.getConnection();
                      PreparedStatement statement
                              = preparedStatement(connection, SQL_INSERT_TRANSACTION, true, values)) {
@@ -141,8 +140,6 @@ public class MySQLTransactionManager implements ITransactionManagement {
         transaction.setTransaction_type(resultSet.getString("transaction_type"));
         transaction.setTransaction_amount(resultSet.getDouble("transaction_amount"));
         transaction.setTransaction_date(resultSet.getString("transaction_date"));
-        transaction.setAccount_balance_before(resultSet.getDouble("account_balance_before"));
-        transaction.setAccount_balance_after(resultSet.getDouble("account_balance_after"));
         return transaction;
     }
 

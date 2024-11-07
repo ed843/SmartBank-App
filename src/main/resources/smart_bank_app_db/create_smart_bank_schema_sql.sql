@@ -46,8 +46,6 @@ CREATE TABLE `Transaction` (
 `transaction_type` varchar(45) NOT NULL CHECK(`transaction_type` IN ('deposit', 'withdrawal')),
 `transaction_amount` decimal(10,2) NOT NULL DEFAULT 0,
 `transaction_date` date NOT NULL DEFAULT '2024-10-30',
-`account_balance_before` double NOT NULL DEFAULT 0,
-`account_balance_after` double NOT NULL DEFAULT 0,
 PRIMARY KEY(`transaction_id`),
 CONSTRAINT `fk_transaction_account_id` FOREIGN KEY (`account_id`) REFERENCES `Account` (`account_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

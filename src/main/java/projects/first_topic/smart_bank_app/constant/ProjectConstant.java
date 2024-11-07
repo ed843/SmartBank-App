@@ -20,8 +20,7 @@ public class ProjectConstant {
             + "(user_id, loan_type, amount, start_date, end_date, application_status, application_date) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?);";
     public static final String SQL_INSERT_TRANSACTION = "INSERT INTO Transaction "
-            + "(account_id, transaction_type, transaction_amount, transaction_date, account_balance_before, "
-            + "account_balance_after) VALUES (?, ?, ?, ?, ?, ?);";
+            + "(account_id, transaction_type, transaction_amount, transaction_date) VALUES (?, ?, ?, ?);";
 
 
     // SELECT/READ of CRUD

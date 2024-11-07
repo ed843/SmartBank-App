@@ -8,6 +8,7 @@ import projects.first_topic.smart_bank_app.services.AccountService;
 import projects.first_topic.smart_bank_app.services.TransactionService;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.getAccountChoice;
@@ -15,6 +16,20 @@ import static projects.first_topic.smart_bank_app.commandline.userutil.AccountMa
 import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.manageUserAuthentication;
 
 public class TransactionManager {
+
+    public static void createTransaction(int accountId, double amount, String type) {
+        Transaction transaction = new Transaction(accountId, type, amount, LocalDate.now().toString());
+        TransactionService transactionService = getTransactionService();
+        if (transactionService == null) {
+            return;
+        }
+        try {
+            transactionService.createTransaction(transaction);
+
+        } catch (SQLException e) {
+            System.out.println("\nError creating transaction: " + e.getMessage());
+        }
+    }
 
     public static void logTransactions() {
         int userId = manageUserAuthentication();
