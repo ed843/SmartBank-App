@@ -27,7 +27,6 @@ public class MySQLAccountManager implements IAccountManagement {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     account.setAccount_id(generatedKeys.getInt(1));
-                    System.out.println("Successfully Inserted account_id " + generatedKeys.getInt(1));
                 } else {
                     throw new DAOException("Creating account failed, no generated key obtained.");
                 }
@@ -43,23 +42,21 @@ public class MySQLAccountManager implements IAccountManagement {
     }
 
     @Override
-    public double totalUserBalance(Integer user_id) throws SQLException {
-        double balance = 0.0;
-        Object[] values = {user_id};
+    public Account findByUserId(Integer userId) throws SQLException {
+        Account account = null;
+        Object[] values = {userId};
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = preparedStatement(connection, ProjectConstant.SQL_FIND_ACCOUNT_BY_USER_ID,
                      false, values);
              ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Account account = getAccountFromResultSet(resultSet);
-                balance += account.getBalance();
+            if (resultSet.next()) {
+                account = getAccountFromResultSet(resultSet);
             }
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-        return balance;
+        return account;
     }
-
 
     private Account find(Object... values) throws SQLException {
         Account account = null;
@@ -88,7 +85,6 @@ public class MySQLAccountManager implements IAccountManagement {
         return account;
     }
 
-
     @Override
     public void resetAutoIncrement() throws SQLException {
         Integer start = 1;
@@ -98,6 +94,21 @@ public class MySQLAccountManager implements IAccountManagement {
                      false, values)) {
             statement.executeUpdate();
         } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public void updateAccountType(Account account, String accountType) throws SQLException {
+        if (account.getAccount_id() == null) {
+            throw new IllegalArgumentException("Account does not exist.");
+        }
+        Object[] values = {accountType, account.getAccount_id()};
+        try (Connection connection = DBConnection.getConnection();
+            PreparedStatement statement
+                = preparedStatement(connection, SQL_UPDATE_ACCOUNT_TYPE, false, values)) {
+            statement.executeUpdate();
+        } catch(SQLException e) {
             throw new SQLException(e);
         }
     }
@@ -144,8 +155,7 @@ public class MySQLAccountManager implements IAccountManagement {
     public void deleteAccount(Account account) throws SQLException {
         Object[] values = {account.getAccount_id()};
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = preparedStatement(connection, SQL_DELETE_ACCOUNT,
-                     false, values)) {
+             PreparedStatement statement = preparedStatement(connection, SQL_DELETE_ACCOUNT, false, values)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new SQLException(e);

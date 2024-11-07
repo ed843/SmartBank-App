@@ -29,6 +29,10 @@ public class AccountService {
         iAccountManagement.updateAccountBalance(account, balance);
     }
 
+    public void updateAccountType(Account account, String accountType) throws SQLException {
+        iAccountManagement.updateAccountType(account, accountType);
+    }
+
     public void deleteAllAccount() throws SQLException {
         iAccountManagement.deleteAllAccounts();
     }
@@ -37,7 +41,11 @@ public class AccountService {
         iAccountManagement.deleteAccount(account);
     }
 
-    public Account getAccount(Integer id) throws SQLException {
+    public Account getAccountById(Integer id) throws SQLException {
         return iAccountManagement.findById(id);
+    }
+
+    public Account getAccountByUserId(Integer userId) throws SQLException {
+        return iAccountManagement.findByUserId(userId);
     }
 }

@@ -10,9 +10,9 @@ public class DAOUtil {
      * given parameter values.
      */
     public static PreparedStatement preparedStatement
-    (Connection connection, String sql, boolean returnGenertedKeys, Object... values) throws SQLException {
+    (Connection connection, String sql, boolean returnGeneratedKeys, Object... values) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(sql,
-                returnGenertedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
+                returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
         setValues(statement, values);
         return statement;
     }

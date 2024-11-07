@@ -4,13 +4,13 @@ USE `smart_bank`;
 
 CREATE TABLE `User` (
 `user_id` int NOT NULL AUTO_INCREMENT,
-`user_name` varchar(45) NOT NULL,
+`user_name` varchar(45) NOT NULL UNIQUE,
 `user_type` varchar(45) NOT NULL CHECK(`user_type` IN ('NEW_USER', 'REWARD_USER', 'PLATINUM_USER', 'VIP')),
 `password` varchar(45) NOT NULL CHECK(LENGTH(`password`) >= 6),
 `first_name` varchar(45) NOT NULL,
 `last_name` varchar(45) NOT NULL,
-`phone` varchar(45) NOT NULL,
-`email` varchar(45) NOT NULL,
+`phone` varchar(45) NOT NULL UNIQUE,
+`email` varchar(45) NOT NULL UNIQUE,
 `credit_score` int NOT NULL DEFAULT 300,
 `annual_income` decimal(10,2) NOT NULL CHECK(`annual_income` >= 0),
 `loan_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
@@ -20,8 +20,8 @@ PRIMARY KEY (`user_id`)
 
 CREATE TABLE `Account` (
 `account_id` int NOT NULL AUTO_INCREMENT,
-`user_id` int NOT NULL,
-`account_type` varchar(45) NOT NULL,
+`user_id` int NOT NULL UNIQUE,
+`account_type` varchar(45) NOT NULL CHECK(`account_type` IN ('CHECKING_ACCOUNT', 'SAVINGS_ACCOUNT')),
 `balance` decimal(10,2) NOT NULL DEFAULT 0 CHECK (`balance` >= 0),
 PRIMARY KEY(`account_id`),
 CONSTRAINT `fk_account_user_id` FOREIGN KEY (`user_id`) REFERENCES `User` (`user_id`)
