@@ -1,4 +1,4 @@
-package projects.first_topic.smart_bank_app.loanManager;
+package projects.first_topic.smart_bank_app.commandline.userutil;
 
 import projects.first_topic.smart_bank_app.constant.ProjectConstant;
 import projects.first_topic.smart_bank_app.factory.DAOFactory;
@@ -7,7 +7,6 @@ import projects.first_topic.smart_bank_app.services.LoanApplicationService;
 import projects.first_topic.smart_bank_app.services.UserService;
 
 import java.sql.SQLException;
-import java.util.Scanner;
 
 import static projects.first_topic.smart_bank_app.commandline.Main.scanner;
 import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.manageUserAuthentication;

@@ -5,7 +5,7 @@ import java.util.Scanner;
 import static projects.first_topic.smart_bank_app.commandline.userutil.AccountManager.*;
 import static projects.first_topic.smart_bank_app.commandline.userutil.TransactionManager.logTransactions;
 import static projects.first_topic.smart_bank_app.commandline.userutil.UserManager.*;
-import static projects.first_topic.smart_bank_app.loanManager.LoanHandler.*;
+import static projects.first_topic.smart_bank_app.commandline.userutil.LoanHandler.*;
 
 public class Main {
     public static final Scanner scanner = new Scanner(System.in);
